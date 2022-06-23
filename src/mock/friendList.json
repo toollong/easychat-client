@@ -1,0 +1,80 @@
+[
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000005",
+        "friendRemark": "老王",
+        "friendNickName": "王五",
+        "friendAvatar": "/images/avatar1.jpg",
+        "introduction": "",
+        "friendTags": [
+            "时间管理大师",
+            "程序员",
+            "打工仔"
+        ],
+        "sessionId": "10000000001",
+        "sessionTime": "2022-06-06 13:17:56"
+    },
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000003",
+        "friendRemark": "老张",
+        "friendNickName": "张三",
+        "friendAvatar": "/images/avatar2.jpg",
+        "introduction": "",
+        "friendTags": [
+            "时间管理大师",
+            "程序员",
+            "打工仔"
+        ],
+        "sessionId": "10000000002",
+        "sessionTime": "2022-06-06 13:17:56"
+    },
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000004",
+        "friendRemark": "laoli",
+        "friendNickName": "李四",
+        "friendAvatar": "/images/avatar3.jpg",
+        "introduction": "",
+        "friendTags": [
+            "时间管理大师",
+            "程序员",
+            "打工仔"
+        ],
+        "sessionId": "10000000003",
+        "sessionTime": "2022-06-06 13:17:56"
+    },
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000002",
+        "friendRemark": "",
+        "friendNickName": "老六",
+        "friendAvatar": "/images/avatar4.jpg",
+        "introduction": "",
+        "friendTags": [],
+        "sessionId": "10000000004",
+        "sessionTime": "2022-06-06 13:17:56"
+    },
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000006",
+        "friendRemark": "",
+        "friendNickName": "老八",
+        "friendAvatar": "/images/avatar5.jpg",
+        "introduction": "",
+        "friendTags": [],
+        "sessionId": "-1",
+        "sessionTime": "2022-06-06 13:17:56"
+    },
+    {
+        "userId": "20000000001",
+        "friendUserId": "20000000007",
+        "friendRemark": "大佬",
+        "friendNickName": "ohMyGod",
+        "friendAvatar": "/images/avatar5.jpg",
+        "introduction": "",
+        "friendTags": [],
+        "sessionId": "-1",
+        "sessionTime": "2022-06-06 13:17:56"
+    }
+]

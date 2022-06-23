@@ -1,0 +1,80 @@
+[
+    {
+        "senderId": "20000000001",
+        "senderNickName": "无敌",
+        "senderAvatar": "/images/avatar2.jpg",
+        "receiverId": "20000000002",
+        "receiverNickName": "张三",
+        "receiverAvatar": "/images/avatar1.jpg",
+        "applyReason": "加我加我加我",
+        "remark": "老张",
+        "status": 0,
+        "hasRead": 0,
+        "createTime": "2022-06-21 10:43:26"
+    },
+    {
+        "senderId": "20000000002",
+        "senderNickName": "张三",
+        "senderAvatar": "/images/avatar1.jpg",
+        "receiverId": "20000000001",
+        "receiverNickName": "无敌",
+        "receiverAvatar": "/images/avatar2.jpg",
+        "applyReason": "加我加我加我",
+        "remark": "老张",
+        "status": 0,
+        "hasRead": 0,
+        "createTime": "2022-06-21 10:43:26"
+    },
+    {
+        "senderId": "20000000003",
+        "senderNickName": "李四",
+        "senderAvatar": "/images/avatar3.jpg",
+        "receiverId": "20000000001",
+        "receiverNickName": "无敌",
+        "receiverAvatar": "/images/avatar2.jpg",
+        "applyReason": "加我",
+        "remark": "",
+        "status": 1,
+        "hasRead": 1,
+        "createTime": "2022-06-15 10:43:26"
+    },
+    {
+        "senderId": "20000000001",
+        "senderNickName": "无敌",
+        "senderAvatar": "/images/avatar2.jpg",
+        "receiverId": "20000000004",
+        "receiverNickName": "王五",
+        "receiverAvatar": "/images/avatar4.jpg",
+        "applyReason": "加我加我",
+        "remark": "王哥",
+        "status": 1,
+        "hasRead": 1,
+        "createTime": "2022-06-02 10:43:26"
+    },
+    {
+        "senderId": "20000000001",
+        "senderNickName": "无敌",
+        "senderAvatar": "/images/avatar2.jpg",
+        "receiverId": "20000000005",
+        "receiverNickName": "大佬",
+        "receiverAvatar": "/images/avatar5.jpg",
+        "applyReason": "加我加我加我",
+        "remark": "",
+        "status": 2,
+        "hasRead": 1,
+        "createTime": "2022-06-20 08:43:26"
+    },
+    {
+        "senderId": "20000000006",
+        "senderNickName": "123456",
+        "senderAvatar": "/images/avatar1.jpg",
+        "receiverId": "20000000001",
+        "receiverNickName": "无敌",
+        "receiverAvatar": "/images/avatar2.jpg",
+        "applyReason": "加我",
+        "remark": "",
+        "status": 3,
+        "hasRead": 1,
+        "createTime": "2022-06-11 10:43:26"
+    }
+]

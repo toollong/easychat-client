@@ -1,0 +1,112 @@
+[
+    {
+        "id": "70000000001",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-26 09:40:25"
+    },
+    {
+        "id": "70000000002",
+        "senderId": "20000000002",
+        "receiverId": "20000000001",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "不用谢，沙雕...",
+        "hasRead": 1,
+        "showTime": 0,
+        "createTime": "2022-05-26 09:41:25"
+    },
+    {
+        "id": "70000000003",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 1,
+        "content": "/images/image1.jpg",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 10:22:25"
+    },
+    {
+        "id": "70000000004",
+        "senderId": "20000000002",
+        "receiverId": "20000000001",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "这鞋是真的丑，兄弟...",
+        "hasRead": 1,
+        "showTime": 0,
+        "createTime": "2022-05-27 10:30:25"
+    },
+    {
+        "id": "70000000005",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 12:40:25"
+    },
+    {
+        "id": "70000000006",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 13:40:25"
+    },
+    {
+        "id": "70000000006",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 13:40:25"
+    },
+    {
+        "id": "70000000006",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 13:40:25"
+    },
+    {
+        "id": "70000000006",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 13:40:25"
+    },
+    {
+        "id": "70000000006",
+        "senderId": "20000000001",
+        "receiverId": "20000000002",
+        "sessionId": "10000000001",
+        "type": 0,
+        "content": "听我说谢谢你，因为有你，温暖了四季...",
+        "hasRead": 1,
+        "showTime": 1,
+        "createTime": "2022-05-27 13:40:25"
+    }
+]

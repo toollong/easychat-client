@@ -1,0 +1,69 @@
+[
+    {
+        "sessionId": "10000000001",
+        "userId": "20000000001",
+        "friendUserId": "20000000005",
+        "friendRemark": "老王",
+        "friendNickName": "王五",
+        "friendAvatar": "/images/avatar1.jpg",
+        "createTime": "2022-06-07 13:17:56",
+        "latestChatHistory": {
+            "senderId": "20000000001",
+            "receiverId": "20000000002",
+            "sessionId": "10000000001",
+            "type": 0,
+            "content": "hello world!",
+            "hasRead": 1,
+            "showTime": 0,
+            "createTime": "2022-06-07 13:17:56"
+        }
+    },
+    {
+        "sessionId": "10000000002",
+        "userId": "20000000001",
+        "friendUserId": "20000000003",
+        "friendRemark": "打了个快结束了冠军上单可根据死得更快",
+        "friendNickName": "张三",
+        "friendAvatar": "/images/avatar2.jpg",
+        "createTime": "2022-05-26 13:17:56",
+        "latestChatHistory": {
+            "senderId": "20000000003",
+            "receiverId": "20000000001",
+            "sessionId": "10000000002",
+            "type": 0,
+            "content": "你好，世界！",
+            "hasRead": 0,
+            "showTime": 0,
+            "createTime": "2022-05-26 13:17:56"
+        }
+    },
+    {
+        "sessionId": "10000000003",
+        "userId": "20000000001",
+        "friendUserId": "20000000004",
+        "friendRemark": "laoli",
+        "friendNickName": "李四",
+        "friendAvatar": "/images/avatar3.jpg",
+        "createTime": "2022-06-06 13:17:56",
+        "latestChatHistory": {
+            "senderId": "20000000004",
+            "receiverId": "20000000001",
+            "sessionId": "10000000003",
+            "type": 1,
+            "content": "/images/image1.jpg",
+            "hasRead": 1,
+            "showTime": 0,
+            "createTime": "2022-06-06 13:17:56"
+        }
+    },
+    {
+        "sessionId": "10000000004",
+        "userId": "20000000001",
+        "friendUserId": "20000000002",
+        "friendRemark": "",
+        "friendNickName": "老六",
+        "friendAvatar": "/images/avatar4.jpg",
+        "createTime": "2022-06-07 13:18:56",
+        "latestChatHistory": {}
+    }
+]
