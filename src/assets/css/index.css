@@ -101,6 +101,8 @@ body {
     --theme-color-light-11: #7269ef;
     --theme-color-light-12: #626aef;
     --theme-box-shadow-1: 0px 0px 12px rgba(0, 47, 255, .12);
+    --background-image-light-1: url(http://localhost:8080/images/background-6.jpeg);
+    --background-image-light-2: url(http://localhost:8080/images/background-7.jpeg);
 }
 
 html.dark {

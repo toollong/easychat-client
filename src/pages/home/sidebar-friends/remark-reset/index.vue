@@ -21,7 +21,7 @@
               <span class="label">好友昵称</span>
             </template>
             <div class="value">
-              <icon-ep-user />
+              <icon-mdi-account style="font-size: 20px" />
               <span>{{ friend.nickName }}</span>
             </div>
           </el-form-item>
@@ -31,7 +31,7 @@
             </template>
             <el-input
               v-model.trim="friend.remark"
-              placeholder="好友还没有备注哦"
+              :placeholder="friend.nickName"
               size="large"
               clearable
             >

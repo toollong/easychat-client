@@ -127,7 +127,10 @@
             </p>
           </div>
         </div>
-        <el-form-item label="备注" prop="remark">
+        <el-form-item prop="remark">
+          <template #label>
+            <span class="label">好友备注</span>
+          </template>
           <el-input
             class="remark-input"
             v-model.trim="friend.remark"
@@ -325,6 +328,9 @@ export default {
   color: var(--text-color-secondary);
   margin: 0;
   margin-left: 1px;
+}
+.agree-form .label {
+  font-size: 16px;
 }
 .agree-form .remark-input {
   margin-right: 50px;

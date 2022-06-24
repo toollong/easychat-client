@@ -26,67 +26,73 @@
           />
         </el-avatar>
       </figure>
-      <span>{{ remark }}</span>
-      <div>
-        <p>
-          {{
-            userInfo.introduction
-              ? userInfo.introduction
-              : "这个人很神秘，什么都没有写..."
-          }}
-        </p>
+      <span class="remark">{{ remark }}</span>
+      <div class="tags">
+        <el-space wrap>
+          <el-tag v-for="tag in userInfo.tags" :key="tag">{{ tag }}</el-tag>
+        </el-space>
       </div>
-      <div>
-        <el-descriptions :column="1" direction="vertical" border>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">昵称</span>
-            </template>
-            {{ userInfo.nickName }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">性别</span>
-            </template>
+      <div class="introduction">
+        {{
+          userInfo.introduction
+            ? userInfo.introduction
+            : "这个人很神秘，什么都没有写..."
+        }}
+      </div>
+      <div class="general">
+        <div class="profile-item">
+          <span>用户名</span>
+          <p>{{ userInfo.username }}</p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>昵称</span>
+          <p>{{ userInfo.nickName }}</p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>性别</span>
+          <p>
             {{
-              userInfo.gender === "2"
-                ? "保密"
+              userInfo.gender === "0"
+                ? "女"
                 : userInfo.gender === "1"
                 ? "男"
-                : "女"
+                : "保密"
             }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">年龄</span>
-            </template>
-            {{ userInfo.age }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">生日</span>
-            </template>
-            {{ moment(userInfo.birthday).format("M 月 D 日") }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">邮箱</span>
-            </template>
-            {{ userInfo.email }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">联系方式</span>
-            </template>
-            {{ userInfo.phone }}
-          </el-descriptions-item>
-          <el-descriptions-item label-align="left">
-            <template #label>
-              <span class="label">地区</span>
-            </template>
-            {{ userInfo.region }}
-          </el-descriptions-item>
-        </el-descriptions>
+          </p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>年龄</span>
+          <p>{{ userInfo.age ? userInfo.age : "保密" }}</p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>生日</span>
+          <p>
+            {{
+              userInfo.birthday
+                ? formatDate(userInfo.birthday, "M 月 D 日")
+                : "保密"
+            }}
+          </p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>邮箱</span>
+          <p>{{ userInfo.email }}</p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>手机号</span>
+          <p>{{ userInfo.phone ? userInfo.phone : "保密" }}</p>
+        </div>
+        <el-divider border-style="dotted" />
+        <div class="profile-item">
+          <span>地区</span>
+          <p>{{ userInfo.region ? userInfo.region : "银河 地球" }}</p>
+        </div>
       </div>
     </div>
   </el-drawer>
@@ -96,7 +102,7 @@
 import { computed, inject, ref, toRefs, watch } from "vue";
 import { useStore } from "vuex";
 import { mockGetUserInfo } from "@/api";
-import moment from "moment";
+import { formatDate } from "@/utils/date";
 
 export default {
   name: "Profile",
@@ -133,9 +139,9 @@ export default {
       emit("update:show", "");
     };
 
+    const friendList = computed(() => store.state.home.friendList);
     const userInfo = ref({});
     const remark = ref("");
-    const friendList = computed(() => store.state.home.friendList);
 
     watch(show, () => {
       if (show.value) {
@@ -149,7 +155,7 @@ export default {
       close,
       userInfo,
       remark,
-      moment,
+      formatDate,
     };
   },
 };
@@ -193,20 +199,48 @@ export default {
   margin-top: 0;
   margin-bottom: 0;
 }
-.profile span {
+.profile .remark {
   font-size: 26px;
   color: var(--text-color-primary);
   text-align: center;
-  margin-bottom: 15px;
+  margin-top: 6px;
 }
-.profile p {
-  color: var(--text-color-secondary);
-  min-height: 30px;
-  margin-top: 0;
+.profile .tags {
+  text-align: center;
+  margin-top: 20px;
 }
-.profile .label {
-  font-size: 16px;
-  font-weight: 500;
+.profile .introduction {
+  border: 1px solid var(--border-color-light);
+  border-radius: 10px;
+  box-shadow: var(--theme-box-shadow-1);
   color: var(--text-color-regular);
+  margin-top: 20px;
+  padding: 20px;
+}
+.profile .general {
+  border: 1px solid var(--border-color-light);
+  border-radius: 10px;
+  box-shadow: var(--theme-box-shadow-1);
+  margin-top: 20px;
+  padding: 0 10px;
+}
+.profile .profile-item {
+  display: flex;
+  align-items: center;
+}
+.profile .profile-item span {
+  width: 80px;
+  font-size: 16px;
+  color: var(--text-color-primary);
+  text-align: center;
+}
+.profile .profile-item p {
+  font-size: 16px;
+  color: var(--text-color-regular);
+  text-align: center;
+  flex: 1;
+}
+.el-divider--horizontal {
+  margin: 0;
 }
 </style>

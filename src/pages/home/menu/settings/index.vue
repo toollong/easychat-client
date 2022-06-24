@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="isShow"
-    size="29%"
+    size="28%"
     direction="ltr"
     :show-close="false"
     destroy-on-close
@@ -126,8 +126,13 @@ export default {
         if (tags.value.length > 2) {
           ElMessage.warning({ message: "最多设置三个标签！", showClose: true });
         } else {
-          tags.value.push(inputValue.value);
-          ElMessage.success({ message: "添加成功", showClose: true });
+          let index = tags.value.findIndex((tag) => tag === inputValue.value);
+          if (index < 0) {
+            tags.value.push(inputValue.value);
+            ElMessage.success({ message: "添加成功", showClose: true });
+          } else {
+            ElMessage.warning({ message: "重复的标签！", showClose: true });
+          }
         }
       }
       inputVisible.value = false;

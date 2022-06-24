@@ -582,7 +582,7 @@ export default {
 .chat-body .messages .message-item .message .header div span {
   font-size: 18px;
   font-weight: 600;
-  color: var(--text-color-regular);
+  color: var(--text-color-primary);
 }
 .chat-body .messages .message-item .message .header div small {
   font-style: italic;

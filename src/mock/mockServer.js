@@ -7,6 +7,7 @@ import chatHistoryList from "./chatHistoryList.json"
 const userInfo = {
     code: 200, data: {
         id: "20000000001",
+        username: "1234567890",
         avatar: "/images/avatar2.jpg",
         nickName: "无敌",
         gender: "1",
@@ -15,6 +16,11 @@ const userInfo = {
         email: "123456789@qq.com",
         phone: "1234567890",
         region: "山东省 烟台市",
+        tags: [
+            "时间管理大师",
+            "程序员",
+            "打工仔"
+        ],
         introduction: ""
     }
 }

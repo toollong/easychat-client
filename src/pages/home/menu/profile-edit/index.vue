@@ -2,7 +2,8 @@
   <el-config-provider :locale="locale">
     <el-drawer
       v-model="isShow"
-      size="25%"
+      direction="ltr"
+      size="28%"
       :show-close="false"
       destroy-on-close
       @open="open"
@@ -24,31 +25,26 @@
           ref="formRef"
           :model="profile"
           :rules="rules"
-          label-position="top"
+          label-position="left"
+          label-width="auto"
+          size="large"
           hide-required-asterisk
         >
-          <el-form-item prop="nickName">
-            <template #label>
-              <span class="label">昵称</span>
-            </template>
-            <el-input v-model.trim="profile.nickName" size="large" clearable>
-              <template #suffix><icon-ep-user /></template>
+          <el-form-item label="昵称" prop="nickName">
+            <el-input v-model.trim="profile.nickName" clearable>
+              <template #prefix><icon-ep-user /></template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="gender">
-            <template #label>
-              <span class="label">性别</span>
-            </template>
-            <el-radio-group v-model="profile.gender" size="large">
+          <el-divider border-style="dotted" />
+          <el-form-item label="性别" prop="gender">
+            <el-radio-group v-model="profile.gender" size="default">
               <el-radio-button label="1">男</el-radio-button>
               <el-radio-button label="0">女</el-radio-button>
               <el-radio-button label="2">保密</el-radio-button>
             </el-radio-group>
           </el-form-item>
-          <el-form-item prop="birthday">
-            <template #label>
-              <span class="label">生日</span>
-            </template>
+          <el-divider border-style="dotted" />
+          <el-form-item label="生日" prop="birthday">
             <el-date-picker
               v-model="profile.birthday"
               :editable="false"
@@ -57,26 +53,20 @@
               :disabled-date="disabledDate"
             />
           </el-form-item>
-          <el-form-item prop="email">
-            <template #label>
-              <span class="label">邮箱</span>
-            </template>
-            <el-input v-model.trim="profile.email" size="large" clearable>
-              <template #suffix><icon-ep-message /></template>
+          <el-divider border-style="dotted" />
+          <el-form-item label="邮箱" prop="email">
+            <el-input v-model.trim="profile.email" clearable>
+              <template #prefix><icon-ep-message /></template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="phone">
-            <template #label>
-              <span class="label">联系方式</span>
-            </template>
-            <el-input v-model.trim="profile.phone" size="large" clearable>
-              <template #suffix><icon-ep-phone /></template>
+          <el-divider border-style="dotted" />
+          <el-form-item label="手机号" prop="phone">
+            <el-input v-model.trim="profile.phone" clearable>
+              <template #prefix><icon-ep-phone /></template>
             </el-input>
           </el-form-item>
-          <el-form-item prop="region">
-            <template #label>
-              <span class="label">地区</span>
-            </template>
+          <el-divider border-style="dotted" />
+          <el-form-item label="地区" prop="region">
             <el-cascader
               v-model="profile.region"
               :options="regions"
@@ -87,32 +77,30 @@
               clearable
             />
           </el-form-item>
-          <el-form-item prop="introduction">
-            <template #label>
-              <span class="label">个人介绍</span>
-            </template>
-            <el-input
-              type="textarea"
-              v-model.trim="profile.introduction"
-              maxlength="60"
-              :rows="3"
-              placeholder="用几句话介绍一下自己吧"
-              resize="none"
-              show-word-limit
-            />
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              :loading="loading"
-              :disabled="loading"
-              size="large"
-              @click="updateUserInfo(formRef)"
-            >
-              {{ loading ? "保存中..." : "保存" }}
-            </el-button>
-          </el-form-item>
+          <el-divider border-style="dotted" />
         </el-form>
+        <div class="introduction">
+          <span>个人介绍</span>
+          <el-input
+            type="textarea"
+            v-model="profile.introduction"
+            maxlength="60"
+            :rows="3"
+            placeholder="用几句话介绍一下自己吧"
+            resize="none"
+            show-word-limit
+          />
+        </div>
+        <el-button
+          class="save-button"
+          type="primary"
+          size="large"
+          :loading="loading"
+          :disabled="loading"
+          @click="updateUserInfo(formRef)"
+        >
+          {{ loading ? "保存中..." : "保存" }}
+        </el-button>
       </div>
     </el-drawer>
   </el-config-provider>
@@ -122,9 +110,9 @@
 import { inject, reactive, ref, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import { mockGetUserInfo, reqEditUserInfo, reqGetUserInfo } from "@/api";
-import moment from "moment";
-import regions from "./regions.json";
+import { formatDate } from "@/utils/date";
 import zhCn from "element-plus/lib/locale/lang/zh-cn";
+import regions from "./regions.json";
 
 export default {
   name: "ProfileEdit",
@@ -155,13 +143,14 @@ export default {
     const close = (formEl) => {
       emit("update:show", false);
       formEl.resetFields();
+      profile.introduction = "";
     };
 
     const formRef = ref();
     const loading = ref(false);
     const profile = reactive({
       nickName: "",
-      gender: "",
+      gender: -1,
       birthday: "",
       email: "",
       phone: "",
@@ -169,31 +158,21 @@ export default {
       introduction: "",
     });
     const disabledDate = (date) => {
-      return moment(date).format("YYYY-MM-DD") > moment().format("YYYY-MM-DD");
+      return (
+        formatDate(date, "YYYY-MM-DD") > formatDate(new Date(), "YYYY-MM-DD")
+      );
     };
     const rules = reactive({
       nickName: [
         { required: true, message: "请输入您的昵称", trigger: "blur" },
         { max: 11, message: "昵称长度不能超过11个字符！", trigger: "blur" },
       ],
-      birthday: [
-        {
-          type: "date",
-          required: true,
-          message: "请选择您的生日",
-          trigger: "change",
-        },
-      ],
       email: [
         { required: true, message: "请输入您的邮箱", trigger: "blur" },
         { max: 30, message: "邮箱长度不能超过30个字符！", trigger: "blur" },
       ],
       phone: [
-        { required: true, message: "请输入您的联系方式", trigger: "blur" },
         { max: 20, message: "号码长度不能超过20个字符！", trigger: "blur" },
-      ],
-      region: [
-        { required: true, message: "请选择您所在的地区", trigger: "change" },
       ],
     });
     const updateUserInfo = async (formEl) => {
@@ -274,12 +253,27 @@ export default {
   color: var(--color-danger);
 }
 .form {
-  display: flex;
   width: 80%;
-  flex-flow: column nowrap;
+  padding-top: 20px;
   margin: auto;
 }
-.form .label {
+.form .introduction {
+  display: flex;
+  flex-flow: column nowrap;
+  padding: 0 30px;
+  margin-bottom: 20px;
+}
+.form .introduction span {
   font-size: 16px;
+  color: var(--text-color-regular);
+  margin-bottom: 10px;
+}
+.form .save-button {
+  margin-left: 30px;
+}
+.el-form-item {
+  padding: 0 30px;
+  margin-bottom: 20px;
+  --el-form-label-font-size: 16px;
 }
 </style>
