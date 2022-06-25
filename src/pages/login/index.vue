@@ -38,10 +38,16 @@
           </el-input>
         </el-form-item>
         <div class="form-options">
-          <el-checkbox v-model="rememberMe">记住密码</el-checkbox>
           <router-link to="/password">忘记密码</router-link>
         </div>
-        <el-button class="form-submit" type="primary">登录</el-button>
+        <el-button
+          class="form-submit"
+          type="primary"
+          :loading="loading"
+          @click="login(formRef)"
+        >
+          {{ loading ? "登录中..." : "登录" }}
+        </el-button>
       </el-form>
       <p>
         没有账号?
@@ -53,7 +59,7 @@
       </p>
     </div>
     <div class="login-footer">
-      <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
+      <p>© 2022 EasyChat. Crafted with by toollong</p>
     </div>
     <vue-particles
       color="#dedede"
@@ -72,28 +78,123 @@
       :clickEffect="true"
       clickMode="push"
     />
+    <el-dialog
+      v-model="showVerification"
+      title="请完成安全验证"
+      width="20%"
+      top="30vh"
+      destroy-on-close
+    >
+      <slide-verify
+        ref="verifyRef"
+        :l="50"
+        :r="10"
+        :w="343"
+        :h="180"
+        slider-text="向右拖动滑块填充拼图"
+        :imgs="images"
+        @again="onAgain"
+        @fail="onFail"
+        @success="onSuccess"
+      />
+      <div style="color: green">{{ successMsg }}</div>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { reactive, ref } from "vue";
+import { useRouter } from "vue-router";
+import { ElMessage } from "element-plus";
+import { reqLogin } from "@/api";
+import SlideVerify from "vue3-slide-verify";
 
 export default {
   name: "Login",
+  components: {
+    SlideVerify,
+  },
   setup() {
+    const router = useRouter();
+
     const formRef = ref();
+    const loading = ref(false);
     const loginForm = reactive({
       username: "",
       password: "",
     });
-    const rememberMe = ref(false);
-    const rules = reactive({});
+    const rules = reactive({
+      username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+      password: [
+        { required: true, message: "请输入密码", trigger: "blur" },
+        { min: 6, message: "密码长度不低于6个字符！", trigger: "blur" },
+      ],
+    });
+    const login = async (formEl) => {
+      if (!formEl) return;
+      await formEl.validate((valid) => {
+        if (valid) {
+          showVerification.value = true;
+        } else {
+          return false;
+        }
+      });
+    };
+
+    const showVerification = ref(false);
+    const verifyRef = ref();
+    const successMsg = ref("");
+    const onAgain = () => {
+      ElMessage.error("检测到非人为操作，请重试！");
+      setTimeout(() => {
+        verifyRef.value.refresh();
+      }, 1000);
+    };
+    const onFail = () => {
+      ElMessage.error("验证未通过，请重试！");
+    };
+    const onSuccess = (time) => {
+      successMsg.value = "验证通过，耗时 " + (time / 1000).toFixed(1) + " s";
+      setTimeout(async () => {
+        showVerification.value = false;
+        successMsg.value = "";
+        loading.value = true;
+        let result = await reqLogin(loginForm);
+        if (result.code === 200) {
+          ElMessage.success("登录成功！");
+          router.push({ name: "home" });
+        } else {
+          ElMessage.error("登录失败，用户名或密码不正确！");
+        }
+        loading.value = false;
+      }, 1000);
+    };
+    const images = [
+      "@/assets/images/verify/image1.jpeg",
+      "@/assets/images/verify/image2.jpeg",
+      "@/assets/images/verify/image3.jpeg",
+      "@/assets/images/verify/image4.jpeg",
+      "@/assets/images/verify/image5.jpeg",
+      "@/assets/images/verify/image6.jpeg",
+      "@/assets/images/verify/image7.jpeg",
+      "@/assets/images/verify/image8.jpeg",
+      "@/assets/images/verify/image9.jpeg",
+      "@/assets/images/verify/image10.jpeg",
+    ];
 
     return {
       formRef,
+      loading,
       loginForm,
-      rememberMe,
       rules,
+      login,
+      showVerification,
+      verifyRef,
+      successMsg,
+      onAgain,
+      onFail,
+      onSuccess,
+      images,
     };
   },
 };
@@ -166,8 +267,9 @@ export default {
 }
 .login-body .form .form-options {
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
   align-items: center;
+  margin: 10px 0;
 }
 .login-body .form .form-options a {
   color: #606266;

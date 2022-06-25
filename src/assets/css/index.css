@@ -101,8 +101,13 @@ body {
     --theme-color-light-11: #7269ef;
     --theme-color-light-12: #626aef;
     --theme-box-shadow-1: 0px 0px 12px rgba(0, 47, 255, .12);
-    --background-image-light-1: url(http://localhost:8080/images/background-6.jpeg);
-    --background-image-light-2: url(http://localhost:8080/images/background-5.jpeg);
+    --background-image-light-1: url(../images/background/background-1.jpeg);
+    --background-image-light-2: url(../images/background/background-2.jpeg);
+    --background-image-light-3: url(../images/background/background-3.jpeg);
+    --background-image-light-4: url(../images/background/background-4.jpeg);
+    --background-image-light-5: url(../images/background/background-5.jpeg);
+    --background-image-light-6: url(../images/background/background-6.jpeg);
+    --background-image-light-7: url(../images/background/background-7.jpeg);
 }
 
 html.dark {

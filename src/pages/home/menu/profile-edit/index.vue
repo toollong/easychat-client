@@ -192,11 +192,10 @@ export default {
           });
           if (result.code === 200) {
             ElMessage.success({ message: "保存成功", showClose: true });
-            loading.value = false;
           } else {
-            ElMessage.error({ message: "保存失败", showClose: true });
-            loading.value = false;
+            ElMessage.error({ message: "网络异常", showClose: true });
           }
+          loading.value = false;
         } else {
           return false;
         }
