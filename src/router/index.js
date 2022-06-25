@@ -34,7 +34,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.path === "/login" || to.path === "/register") {
+    if (to.path === "/login" || to.path === "/register" || to.path === "/password") {
         return next();
     }
     const uid = getCookie("uid");

@@ -233,7 +233,7 @@ export default {
         beforeClose: async (action, instance, done) => {
           if (action === "confirm") {
             instance.confirmButtonLoading = true;
-            instance.confirmButtonText = "退出中...";
+            instance.confirmButtonText = "正在退出...";
             instance.confirmButtonDisabled = true;
             let result = await mockLogout();
             // let result = await reqLogout();
