@@ -8,7 +8,6 @@
         class="form"
         :model="loginForm"
         :rules="rules"
-        label-position="top"
         size="large"
         @keyup.enter.exact="login(formRef)"
       >
