@@ -3,7 +3,7 @@
     <ul>
       <li class="logo">
         <a @click="reload">
-          <img src="/images/logo.svg" />
+          <img src="/images/logo.svg" alt="EasyChat" />
         </a>
       </li>
       <li>
@@ -191,9 +191,11 @@
 
 <script>
 import { getCurrentInstance, inject, ref, toRefs, watch } from "vue";
+import { useRouter } from "vue-router";
 import { useColorMode } from "@vueuse/core";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { mockLogout, reqLogout } from "@/api";
+import { reqLogout } from "@/api";
+import { setCookie } from "@/utils/cookie";
 import ProfileEdit from "@/pages/home/menu/profile-edit";
 import Settings from "@/pages/home/menu/settings";
 import Search from "@/pages/home/menu/search";
@@ -216,6 +218,7 @@ export default {
       getCurrentInstance().appContext.config.globalProperties.socket;
     const user = inject("user");
     const reload = inject("reload");
+    const router = useRouter();
     const mode = useColorMode();
 
     const { menu } = toRefs(props);
@@ -235,24 +238,21 @@ export default {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = "正在退出...";
             instance.confirmButtonDisabled = true;
-            let result = await mockLogout();
             // let result = await reqLogout();
-            if (result.code === 200) {
-              socket.emit("offline", user.userId);
-              ElMessage.success({ message: "操作成功", showClose: true });
-            } else {
-              ElMessage.error({ message: "网络异常", showClose: true });
-              instance.confirmButtonLoading = false;
-              instance.confirmButtonText = "确定";
-              instance.confirmButtonDisabled = false;
-            }
+            // if (result.code !== 200) {
+            setCookie("uid", "", 0);
+            // }
+            //   socket.emit("offline", user.userId);
             done();
           } else {
             done();
           }
         },
       })
-        .then(reload)
+        .then(() => {
+          router.push({ name: "login" });
+          ElMessage.success("已退出");
+        })
         .catch(() => {});
     };
 

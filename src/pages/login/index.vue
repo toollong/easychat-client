@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <div class="login-header">EasyChat</div>
+    <div class="login-header"><img src="/images/logo.svg" /></div>
     <div class="login-body">
       <span class="title">密码登录</span>
       <el-form
@@ -10,6 +10,7 @@
         :rules="rules"
         label-position="top"
         size="large"
+        @keyup.enter.exact="login(formRef)"
       >
         <el-form-item class="form-item" prop="username">
           <span class="label">用户名</span>
@@ -107,8 +108,8 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { reqLogin } from "@/api";
-import SlideVerify from "vue3-slide-verify";
 import { setCookie } from "@/utils/cookie";
+import SlideVerify from "vue3-slide-verify";
 
 export default {
   name: "Login",
@@ -159,18 +160,17 @@ export default {
         loading.value = true;
         setTimeout(() => {
           setCookie("uid", "20000000001", 300);
-          ElMessage.success("登录成功！");
           router.push({ name: "home" });
-          loading.value = false;
+          ElMessage.success("登录成功！");
         }, 1000);
         // let result = await reqLogin(loginForm);
         // if (result.code === 200) {
-        //   ElMessage.success("登录成功！");
         //   router.push({ name: "home" });
+        //   ElMessage.success("登录成功！");
         // } else {
         //   ElMessage.error("登录失败，用户名或密码不正确！");
-        // }
         // loading.value = false;
+        // }
       }, 1000);
     };
     const images = [
@@ -210,28 +210,24 @@ export default {
   overflow: hidden;
 }
 .login .login-header {
-  width: 200px;
+  width: 100px;
   height: 100px;
-  font-size: 40px;
-  color: var(--color-white);
-  text-align: center;
-  position: absolute;
-  top: -60%;
+  position: fixed;
+  top: 100px;
   left: 0;
   right: 0;
-  bottom: 0;
   margin: auto;
   overflow: hidden;
 }
 .login .login-body {
   display: flex;
   width: 20%;
-  height: 430px;
+  height: 420px;
   flex-flow: column nowrap;
   align-items: center;
   border-radius: 10px;
   background-color: var(--color-white);
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -244,13 +240,16 @@ export default {
   height: 50px;
   color: var(--color-white);
   text-align: center;
-  position: absolute;
-  top: 70%;
+  position: fixed;
+  top: 800px;
   left: 0;
   right: 0;
-  bottom: 0;
   margin: auto;
   overflow: hidden;
+}
+.login-header img {
+  width: 100px;
+  height: 100px;
 }
 .login-body .title {
   font-size: 20px;

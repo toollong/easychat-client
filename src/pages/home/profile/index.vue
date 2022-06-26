@@ -222,7 +222,7 @@ export default {
   border-radius: 10px;
   box-shadow: var(--theme-box-shadow-1);
   margin-top: 20px;
-  padding: 0 10px;
+  padding: 10px;
 }
 .profile .profile-item {
   display: flex;

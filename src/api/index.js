@@ -7,7 +7,6 @@ export const mockGetFriendList = () => mockAxios.get('/friends');
 export const mockGetFriendVerify = () => mockAxios.get('/friends/verify');
 export const mockGetHistory = () => mockAxios.get('/chats/chat/history');
 export const mockAddChat = () => mockAxios.post('/chats/add');
-export const mockLogout = () => mockAxios.post('/logout');
 
 
 export const reqLogin = (data) => axios.post('/login', data);
