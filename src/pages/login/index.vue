@@ -59,7 +59,7 @@
       </p>
     </div>
     <div class="login-footer">
-      <p>© 2022 EasyChat. Crafted with by toollong</p>
+      <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
     </div>
     <vue-particles
       color="#dedede"
