@@ -80,7 +80,7 @@
     />
     <el-dialog
       v-model="showVerification"
-      title="请完成安全验证"
+      title="请先完成安全验证"
       width="20%"
       top="30vh"
       destroy-on-close
@@ -91,7 +91,7 @@
         :r="10"
         :w="343"
         :h="180"
-        slider-text="向右拖动滑块填充拼图"
+        slider-text="向右拖动滑块完成拼图"
         :imgs="images"
         @again="onAgain"
         @fail="onFail"
@@ -108,6 +108,7 @@ import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { reqLogin } from "@/api";
 import SlideVerify from "vue3-slide-verify";
+import { setCookie } from "@/utils/cookie";
 
 export default {
   name: "Login",
@@ -125,10 +126,7 @@ export default {
     });
     const rules = reactive({
       username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-      password: [
-        { required: true, message: "请输入密码", trigger: "blur" },
-        { min: 6, message: "密码长度不低于6个字符！", trigger: "blur" },
-      ],
+      password: [{ required: true, message: "请输入密码", trigger: "blur" }],
     });
     const login = async (formEl) => {
       if (!formEl) return;
@@ -159,27 +157,32 @@ export default {
         showVerification.value = false;
         successMsg.value = "";
         loading.value = true;
-        let result = await reqLogin(loginForm);
-        if (result.code === 200) {
+        setTimeout(() => {
+          setCookie("uid", "20000000001", 300);
           ElMessage.success("登录成功！");
           router.push({ name: "home" });
-        } else {
-          ElMessage.error("登录失败，用户名或密码不正确！");
-        }
-        loading.value = false;
+          loading.value = false;
+        }, 1000);
+        // let result = await reqLogin(loginForm);
+        // if (result.code === 200) {
+        //   ElMessage.success("登录成功！");
+        //   router.push({ name: "home" });
+        // } else {
+        //   ElMessage.error("登录失败，用户名或密码不正确！");
+        // }
+        // loading.value = false;
       }, 1000);
     };
     const images = [
-      "@/assets/images/verify/image1.jpeg",
-      "@/assets/images/verify/image2.jpeg",
-      "@/assets/images/verify/image3.jpeg",
-      "@/assets/images/verify/image4.jpeg",
-      "@/assets/images/verify/image5.jpeg",
-      "@/assets/images/verify/image6.jpeg",
-      "@/assets/images/verify/image7.jpeg",
-      "@/assets/images/verify/image8.jpeg",
-      "@/assets/images/verify/image9.jpeg",
-      "@/assets/images/verify/image10.jpeg",
+      "/images/verify/image1.jpeg",
+      "/images/verify/image2.jpeg",
+      "/images/verify/image3.jpeg",
+      "/images/verify/image4.jpeg",
+      "/images/verify/image5.jpeg",
+      "/images/verify/image6.jpeg",
+      "/images/verify/image7.jpeg",
+      "/images/verify/image8.jpeg",
+      "/images/verify/image9.jpeg",
     ];
 
     return {
@@ -262,7 +265,7 @@ export default {
   margin-bottom: 6px;
 }
 .login-body .form .form-item .label {
-  font-size: 16px;
+  font-size: 15px;
   color: #606266;
 }
 .login-body .form .form-options {
