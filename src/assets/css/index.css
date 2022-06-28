@@ -291,3 +291,25 @@ html.dark .el-empty {
     --el-empty-fill-color-8: #1c1d1f;
     --el-empty-fill-color-9: #18181a
 }
+
+.el-drawer {
+    height: calc(100vh - 40px) !important;
+    border-radius: 10px;
+    margin: 20px;
+}
+
+.el-drawer .el-drawer__header {
+    margin-bottom: 10px;
+}
+
+.el-dialog {
+    border-radius: 10px !important;
+}
+
+.el-dialog .el-dialog__body {
+    padding: 10px 20px;
+}
+
+.el-calendar .el-calendar__header {
+    align-items: center;
+}

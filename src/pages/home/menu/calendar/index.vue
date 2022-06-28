@@ -20,12 +20,10 @@
       </div>
     </template>
     <el-config-provider :locale="locale">
-      <el-calendar ref="calendar">
+      <el-calendar ref="calendar" class="calendar">
         <template #header="{ date }">
-          <span style="font-weight: 600; color: #409eff">
-            ⭐ 要天天开心哦 ! ⭐
-          </span>
-          <span style="font-size: 18px; font-weight: 600; color: #409eff">
+          <span class="tip"> ⭐ 要天天开心哦 ! ⭐ </span>
+          <span class="date">
             {{ date }}
           </span>
           <el-button-group>
@@ -139,5 +137,16 @@ export default {
 }
 .dialog-header .close:hover {
   color: var(--color-danger);
+}
+.calendar {
+  padding: 10px 20px;
+}
+.calendar .tip {
+  color: var(--theme-color-light-2);
+}
+.calendar .date {
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--theme-color-light-2);
 }
 </style>

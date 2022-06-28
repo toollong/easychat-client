@@ -168,6 +168,7 @@
           maxlength="200"
           :autosize="{ minRows: 1, maxRows: 6 }"
           resize="none"
+          spellcheck="false"
           @blur="focusIndex = $event.target.selectionStart"
           @focus="setFocusIndex"
           @keyup.enter.exact="sendMessage"

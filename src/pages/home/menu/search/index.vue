@@ -20,13 +20,12 @@
       </div>
     </template>
     <div class="search">
-      <el-alert title="选一个喜欢的搜索引擎吧" type="success" center />
       <el-input
-        class="search-input"
         v-model.trim="searchValue"
         maxlength="100"
         size="large"
         placeholder="在这里输入您想搜的内容"
+        spellcheck="false"
         clearable
         @keydown.enter="search"
       >
@@ -131,11 +130,8 @@ export default {
 }
 .search {
   display: flex;
-  height: 12vh;
   flex-flow: column nowrap;
-}
-.search-input {
-  margin-top: 20px;
+  padding: 20px 40px;
 }
 .search-button {
   background-color: var(--color-primary-light) !important;

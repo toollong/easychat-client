@@ -14,9 +14,12 @@
         <el-form-item class="form-item" prop="username">
           <span class="label">用户名</span>
           <el-input
+            class="input"
             v-model.trim="loginForm.username"
             maxlength="11"
             placeholder="请输入用户名"
+            spellcheck="false"
+            @focus="formRef.clearValidate('username')"
           >
             <template #prefix>
               <icon-ep-user style="font-size: 17px" />
@@ -26,11 +29,14 @@
         <el-form-item class="form-item" prop="password">
           <span class="label">密码</span>
           <el-input
+            class="input"
             v-model.trim="loginForm.password"
             type="password"
             maxlength="16"
             placeholder="请输入密码"
+            spellcheck="false"
             show-password
+            @focus="formRef.clearValidate('password')"
           >
             <template #prefix>
               <icon-ep-lock style="font-size: 17px" />
@@ -46,7 +52,7 @@
           :loading="loading"
           @click="login(formRef)"
         >
-          {{ loading ? "登录中..." : "登录" }}
+          {{ loading ? "登录中..." : "登 录" }}
         </el-button>
       </el-form>
       <p>
@@ -125,14 +131,24 @@ export default {
       password: "",
     });
     const rules = reactive({
-      username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
-      password: [{ required: true, message: "请输入密码", trigger: "blur" }],
+      username: [
+        { required: true, message: "你还没有输入用户名！", trigger: "submit" },
+      ],
+      password: [
+        { required: true, message: "你还没有输入密码！", trigger: "submit" },
+      ],
     });
     const login = async (formEl) => {
       if (!formEl) return;
-      await formEl.validate((valid) => {
+      await formEl.validateField("username", (valid) => {
         if (valid) {
-          showVerification.value = true;
+          formEl.validateField("password", (valid) => {
+            if (valid) {
+              showVerification.value = true;
+            } else {
+              return false;
+            }
+          });
         } else {
           return false;
         }
@@ -180,7 +196,7 @@ export default {
       "/images/verify/image5.jpeg",
       "/images/verify/image6.jpeg",
       "/images/verify/image7.jpeg",
-      "/images/verify/image8.jpeg",
+      "/images/verify/image8.jpg",
       "/images/verify/image9.jpeg",
     ];
 
@@ -226,6 +242,7 @@ export default {
   align-items: center;
   border-radius: 10px;
   background-color: var(--color-white);
+  color: #303133;
   position: fixed;
   top: 0;
   left: 0;
@@ -260,11 +277,15 @@ export default {
   padding: 20px 40px;
 }
 .login-body .form .form-item {
-  margin-bottom: 6px;
+  margin-bottom: 10px;
 }
 .login-body .form .form-item .label {
-  font-size: 15px;
+  height: 36px;
+  font-size: 16px;
   color: #606266;
+}
+.login-body .form .form-item .input {
+  height: 45px;
 }
 .login-body .form .form-options {
   display: flex;
@@ -281,12 +302,12 @@ export default {
 }
 .login-body .form .form-submit {
   width: 100%;
-  margin-top: 10px;
+  font-size: 15px;
 }
 .login-body p {
   color: #969696;
-  margin-top: 0;
-  margin-bottom: 16px;
+  margin-top: 8px;
+  margin-bottom: 8px;
 }
 .login-body p a {
   color: #409eff;
@@ -295,5 +316,29 @@ export default {
 }
 .login-body p a:hover {
   color: #79bbff;
+}
+.el-input {
+  --el-input-text-color: #606266;
+  --el-input-border: 1px solid #dcdfe6;
+  --el-input-hover-border: #c0c4cc;
+  --el-input-focus-border: #409eff;
+  --el-input-transparent-border: 0 0 0 1px transparent inset;
+  --el-input-border-color: #dcdfe6;
+  --el-input-border-radius: 4px;
+  --el-input-bg-color: #ffffff;
+  --el-input-icon-color: #a8abb2;
+  --el-input-placeholder-color: #a8abb2;
+  --el-input-hover-border-color: #c0c4cc;
+  --el-input-clear-hover-color: #909399;
+  --el-input-focus-border-color: #409eff;
+}
+.el-button--primary {
+  --el-button-hover-link-text-color: #a0cfff;
+  --el-button-hover-bg-color: #79bbff;
+  --el-button-hover-border-color: #79bbff;
+  --el-button-active-bg-color: #337ecc;
+  --el-button-active-border-color: #337ecc;
+  --el-button-disabled-bg-color: #a0cfff;
+  --el-button-disabled-border-color: #a0cfff;
 }
 </style>

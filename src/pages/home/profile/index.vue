@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="isShow"
-    size="25%"
+    size="23%"
     :show-close="false"
     destroy-on-close
     @open="open"
@@ -203,7 +203,6 @@ export default {
   font-size: 26px;
   color: var(--text-color-primary);
   text-align: center;
-  margin-top: 6px;
 }
 .profile .tags {
   text-align: center;
@@ -222,7 +221,7 @@ export default {
   border-radius: 10px;
   box-shadow: var(--theme-box-shadow-1);
   margin-top: 20px;
-  padding: 10px;
+  padding: 10px 20px;
 }
 .profile .profile-item {
   display: flex;

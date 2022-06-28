@@ -62,6 +62,7 @@
           :maxlength="11"
           size="large"
           placeholder="搜索"
+          spellcheck="false"
           clearable
         >
           <template #prefix><icon-ep-search /></template>

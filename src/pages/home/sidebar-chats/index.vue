@@ -49,6 +49,7 @@
           :maxlength="11"
           size="large"
           placeholder="搜索"
+          spellcheck="false"
           clearable
           @select="handleSelect"
         >
@@ -272,6 +273,8 @@ export default {
           console.log(response);
           chatList.value.splice(0, 0, response);
           emit("update:showChat", response.sessionId);
+          store.dispatch("home/getFriendList");
+          // store.dispatch("home/getFriendList", user.userId);
         } else {
           ElMessage.error({ message: "网络异常", showClose: true });
         }
@@ -318,6 +321,8 @@ export default {
                   emit("update:showChat", "");
                 }
                 chatList.value.splice(index, 1);
+                store.dispatch("home/getFriendList");
+                // store.dispatch("home/getFriendList", user.userId);
               } else {
                 ElMessage.error({ message: "网络异常", showClose: true });
               }

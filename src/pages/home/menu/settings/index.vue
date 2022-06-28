@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="isShow"
-    size="28%"
+    size="26%"
     direction="ltr"
     :show-close="false"
     destroy-on-close
@@ -52,6 +52,7 @@
             ref="inputRef"
             v-if="inputVisible"
             v-model.trim="inputValue"
+            spellcheck="false"
             @keyup.enter="addTag"
             @blur="addTag"
           />
@@ -195,17 +196,15 @@ export default {
 }
 .settings {
   display: flex;
-  width: 80%;
   flex-flow: column nowrap;
   font-size: 16px;
-  margin: auto;
+  padding: 20px 60px;
 }
 .status {
   display: flex;
   align-items: center;
 }
 .status-label {
-  color: var(--text-color-regular);
   margin-right: 30px;
 }
 .tags {
@@ -215,7 +214,6 @@ export default {
   margin-top: 20px;
 }
 .tags-label {
-  color: var(--text-color-regular);
   margin-right: 30px;
 }
 .tags-item {

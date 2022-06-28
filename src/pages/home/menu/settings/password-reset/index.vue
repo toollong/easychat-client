@@ -2,63 +2,70 @@
   <el-dialog
     v-model="isShow"
     title="修改密码"
-    width="40%"
+    width="30%"
     draggable
     destroy-on-close
     @closed="close(formRef)"
   >
-    <div class="form">
-      <el-form
-        ref="formRef"
-        :model="form"
-        :rules="rules"
-        label-width="150px"
-        size="large"
-        status-icon
-      >
-        <el-form-item prop="oldPassword">
-          <template #label>
-            <span class="label">旧密码</span>
-          </template>
-          <el-input
-            v-model.trim="form.oldPassword"
-            type="password"
-            show-password
-          />
-        </el-form-item>
-        <el-form-item prop="newPassword">
-          <template #label>
-            <span class="label">新密码</span>
-          </template>
-          <el-input
-            v-model.trim="form.newPassword"
-            type="password"
-            show-password
-          />
-        </el-form-item>
-        <el-form-item prop="checkPassword">
-          <template #label>
-            <span class="label">确认密码</span>
-          </template>
-          <el-input
-            v-model.trim="form.checkPassword"
-            type="password"
-            show-password
-          />
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            type="primary"
-            :loading="loading"
-            :disabled="loading"
-            @click="resetPassword(formRef)"
-          >
-            {{ loading ? "修改中..." : "修改" }}
-          </el-button>
-          <el-button @click="resetForm(formRef)">重置</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
+    <el-form
+      ref="formRef"
+      class="form"
+      :model="form"
+      :rules="rules"
+      label-width="80px"
+      size="large"
+      hide-required-asterisk
+      status-icon
+    >
+      <el-form-item class="form-item" prop="oldPassword">
+        <template #label>
+          <span class="label">原密码</span>
+        </template>
+        <el-input
+          type="password"
+          v-model.trim="form.oldPassword"
+          spellcheck="false"
+          show-password
+          @focus="formRef.clearValidate('oldPassword')"
+        />
+      </el-form-item>
+      <el-form-item class="form-item" prop="newPassword">
+        <template #label>
+          <span class="label">新密码</span>
+        </template>
+        <el-input
+          type="password"
+          v-model.trim="form.newPassword"
+          spellcheck="false"
+          show-password
+          @focus="formRef.clearValidate('newPassword')"
+        />
+      </el-form-item>
+      <el-form-item class="form-item" prop="checkPassword">
+        <template #label>
+          <span class="label">确认密码</span>
+        </template>
+        <el-input
+          type="password"
+          v-model.trim="form.checkPassword"
+          spellcheck="false"
+          show-password
+          @focus="formRef.clearValidate('checkPassword')"
+        />
+      </el-form-item>
+      <el-form-item class="form-item">
+        <el-button
+          class="button"
+          type="primary"
+          :loading="loading"
+          :disabled="loading"
+          @click="resetPassword(formRef)"
+        >
+          {{ loading ? "修改中..." : "修改" }}
+        </el-button>
+        <el-button class="button" @click="resetForm(formRef)">重置</el-button>
+      </el-form-item>
+    </el-form>
   </el-dialog>
 </template>
 
@@ -91,30 +98,23 @@ export default {
       checkPassword: "",
     });
     const validateOldPassword = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入旧密码"));
-      } else if (value.length < 8 || value.length > 16) {
-        callback(new Error("密码由8-16位数字、字母或符号组成！"));
+      // 发送请求判断原密码是否正确
+      if (value !== "n1234567") {
+        callback(new Error("原密码不正确！"));
       } else {
         callback();
       }
     };
     const validateNewPassword = (rule, value, callback) => {
-      if (value === "") {
-        callback(new Error("请输入新密码"));
-      } else if (value.length < 8 || value.length > 16) {
-        callback(new Error("密码由8-16位数字、字母或符号组成！"));
+      if (value === form.oldPassword) {
+        callback(new Error("新密码与原密码不能相同！"));
       } else {
-        if (form.checkPassword !== "") {
-          if (!formRef.value) return;
-          formRef.value.validateField("checkPassword", () => null);
-        }
         callback();
       }
     };
     const validateCheckPassword = (rule, value, callback) => {
       if (value === "") {
-        callback(new Error("请再次输入新密码"));
+        callback(new Error("请再次输入新密码！"));
       } else if (value !== form.newPassword) {
         callback(new Error("两次输入的密码不一致！"));
       } else {
@@ -122,31 +122,65 @@ export default {
       }
     };
     const rules = reactive({
-      oldPassword: [{ validator: validateOldPassword, trigger: "blur" }],
-      newPassword: [{ validator: validateNewPassword, trigger: "blur" }],
+      oldPassword: [
+        { required: true, message: "请输入原密码！", trigger: "blur" },
+        { validator: validateOldPassword, trigger: "submit" },
+      ],
+      newPassword: [
+        { required: true, message: "密码不能为空！", trigger: "blur" },
+        {
+          min: 8,
+          max: 16,
+          message: "密码长度应为8~16个字符！",
+          trigger: "blur",
+        },
+        {
+          pattern: /^[a-zA-Z0-9~!@#$%^&*?()_.]*$/,
+          message: "只能输入字母、数字、特殊符号 (~!@#$%^&*?_.) ！",
+          trigger: "blur",
+        },
+        {
+          pattern:
+            /(?!^(\d+|[a-zA-Z]+|[~!@#$%^&*?()_.]+)$)^[\w~!@#$%^&*?()_.]{8,16}$/,
+          message: "必须包含字母、数字、特殊符号中至少两种！",
+          trigger: "blur",
+        },
+        { validator: validateNewPassword, trigger: "submit" },
+      ],
       checkPassword: [{ validator: validateCheckPassword, trigger: "blur" }],
     });
     const resetPassword = async (formEl) => {
       if (!formEl) return;
-      await formEl.validate(async (valid) => {
+      await formEl.validateField("oldPassword", (valid) => {
         if (valid) {
-          loading.value = true;
-          let result = await reqChangePassword({
-            userId: user.userId,
-            oldPassword: form.oldPassword,
-            newPassword: form.newPassword,
-            checkPassword: form.checkPassword,
+          formEl.validateField("newPassword", (valid) => {
+            if (valid) {
+              formEl.validateField("checkPassword", async (valid) => {
+                if (valid) {
+                  loading.value = true;
+                  let result = await reqChangePassword({
+                    userId: user.userId,
+                    oldPassword: form.oldPassword,
+                    newPassword: form.newPassword,
+                    checkPassword: form.checkPassword,
+                  });
+                  if (result.code === 200) {
+                    ElMessage.success({ message: "修改成功", showClose: true });
+                  } else {
+                    ElMessage.error({
+                      message: "网络异常，请重试！",
+                      showClose: true,
+                    });
+                  }
+                  loading.value = false;
+                } else {
+                  return false;
+                }
+              });
+            } else {
+              return false;
+            }
           });
-          if (result.code === 200) {
-            ElMessage.success({ message: "修改成功", showClose: true });
-            loading.value = false;
-          } else {
-            ElMessage.error({
-              message: "修改失败，旧密码不正确！",
-              showClose: true,
-            });
-            loading.value = false;
-          }
         } else {
           return false;
         }
@@ -179,9 +213,16 @@ export default {
 
 <style scoped>
 .form {
-  width: 80%;
+  padding: 20px 60px;
 }
-.form .label {
+.form .form-item {
+  margin-bottom: 30px;
+}
+.form .form-item .label {
   font-size: 16px;
+}
+.form .form-item .button {
+  width: 40%;
+  font-size: 15px;
 }
 </style>

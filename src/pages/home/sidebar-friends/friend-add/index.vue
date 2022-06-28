@@ -15,6 +15,7 @@
           maxlength="11"
           size="large"
           placeholder="用户名"
+          spellcheck="false"
           clearable
           @keydown.enter="searchUser"
         >
@@ -145,6 +146,7 @@
               placeholder="输入申请理由"
               size="large"
               resize="none"
+              spellcheck="false"
               show-word-limit
               clearable
             >
@@ -156,7 +158,9 @@
               v-model.trim="friend.remark"
               :placeholder="friend.nickName"
               size="large"
+              spellcheck="false"
               clearable
+              @focus="formRef.clearValidate('remark')"
             >
               <template #suffix><icon-ep-tickets /></template>
             </el-input>
@@ -247,7 +251,7 @@ export default {
             },
             {
               id: "20000000002",
-              username: "奠定了空间房间时的跨境",
+              username: "1",
               avatar: "/images/avatar2.jpg",
               nickName: "奠定了空间房间时的跨境",
               gender: 0,
@@ -274,7 +278,7 @@ export default {
             },
             {
               id: "20000000004",
-              username: "456",
+              username: "1456",
               avatar: "/images/avatar4.jpg",
               nickName: "LJCKJDHVKDS",
               gender: 1,
@@ -287,7 +291,7 @@ export default {
             },
             {
               id: "20000000004",
-              username: "789",
+              username: "1789",
               avatar: "/images/avatar4.jpg",
               nickName: "LJCKJDHVKDS",
               gender: 1,
@@ -413,6 +417,7 @@ export default {
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
+  padding: 20px;
 }
 .friend-add .user-search {
   width: 100%;
@@ -425,9 +430,7 @@ export default {
   margin-right: 20px;
 }
 .search {
-  margin-top: 10px;
-  padding-left: 10px;
-  padding-right: 10px;
+  margin: 10px 0;
 }
 .search .search-button {
   background-color: var(--color-primary-light);
@@ -440,14 +443,13 @@ export default {
 }
 .search-result {
   width: 100%;
-  height: 320px;
-  padding: 10px;
+  height: 330px;
   overflow: auto;
 }
 .user-item {
   display: flex;
-  width: 250px;
-  height: 160px;
+  width: 231px;
+  height: 154px;
   flex-flow: column nowrap;
   border: 1px solid var(--border-color-light);
   border-radius: 5px;
@@ -480,7 +482,7 @@ export default {
   font-weight: 600;
 }
 .user-item .header div p {
-  font-size: 13px;
+  font-size: 12px;
   color: var(--text-color-secondary);
   margin: 0;
   margin-left: 1px;
@@ -489,8 +491,8 @@ export default {
 }
 .user-item .body {
   color: var(--text-color-regular);
-  margin-top: 4px;
-  margin-bottom: 6px;
+  margin-top: 0;
+  margin-bottom: 5px;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

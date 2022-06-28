@@ -3,11 +3,12 @@
     <el-drawer
       v-model="isShow"
       direction="ltr"
-      size="28%"
+      size="26%"
       :show-close="false"
       destroy-on-close
       @open="open"
       @closed="close(formRef)"
+      append-to-body
     >
       <template #header="{ titleId, titleClass, close }">
         <div class="drawer-header">
@@ -20,67 +21,83 @@
           </div>
         </div>
       </template>
-      <div class="form">
-        <el-form
-          ref="formRef"
-          :model="profile"
-          :rules="rules"
-          label-position="left"
-          label-width="auto"
-          size="large"
-          hide-required-asterisk
-        >
-          <el-form-item label="昵称" prop="nickName">
-            <el-input v-model.trim="profile.nickName" clearable>
-              <template #prefix><icon-ep-user /></template>
-            </el-input>
-          </el-form-item>
-          <el-divider border-style="dotted" />
-          <el-form-item label="性别" prop="gender">
-            <el-radio-group v-model="profile.gender" size="default">
-              <el-radio-button label="1">男</el-radio-button>
-              <el-radio-button label="0">女</el-radio-button>
-              <el-radio-button label="2">保密</el-radio-button>
-            </el-radio-group>
-          </el-form-item>
-          <el-divider border-style="dotted" />
-          <el-form-item label="生日" prop="birthday">
-            <el-date-picker
-              v-model="profile.birthday"
-              :editable="false"
-              placeholder="请选择日期"
-              value-format="YYYY-MM-DD"
-              :disabled-date="disabledDate"
-            />
-          </el-form-item>
-          <el-divider border-style="dotted" />
-          <el-form-item label="邮箱" prop="email">
-            <el-input v-model.trim="profile.email" clearable>
-              <template #prefix><icon-ep-message /></template>
-            </el-input>
-          </el-form-item>
-          <el-divider border-style="dotted" />
-          <el-form-item label="手机号" prop="phone">
-            <el-input v-model.trim="profile.phone" clearable>
-              <template #prefix><icon-ep-phone /></template>
-            </el-input>
-          </el-form-item>
-          <el-divider border-style="dotted" />
-          <el-form-item label="地区" prop="region">
-            <el-cascader
-              v-model="profile.region"
-              :options="regions"
-              :props="{ value: 'name', label: 'name', children: 'city' }"
-              separator="-"
-              placeholder="请选择地区"
-              filterable
-              clearable
-            />
-          </el-form-item>
-          <el-divider border-style="dotted" />
-        </el-form>
-        <div class="introduction">
-          <span>个人介绍</span>
+      <el-form
+        ref="formRef"
+        class="form"
+        :model="profile"
+        :rules="rules"
+        size="large"
+        hide-required-asterisk
+      >
+        <el-form-item class="form-item" prop="nickName">
+          <span class="label">昵称</span>
+          <el-input
+            class="input"
+            v-model.trim="profile.nickName"
+            spellcheck="false"
+            clearable
+            @focus="formRef.clearValidate('nickName')"
+          >
+            <template #prefix><icon-ep-user /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item class="form-item" prop="gender">
+          <span class="label">性别</span>
+          <el-radio-group v-model="profile.gender" size="default">
+            <el-radio-button label="1">男</el-radio-button>
+            <el-radio-button label="0">女</el-radio-button>
+            <el-radio-button label="2">保密</el-radio-button>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item class="form-item" prop="birthday">
+          <span class="label">生日</span>
+          <el-date-picker
+            v-model="profile.birthday"
+            :editable="false"
+            placeholder="请选择日期"
+            value-format="YYYY-MM-DD"
+            :disabled-date="disabledDate"
+          />
+        </el-form-item>
+        <el-form-item class="form-item" prop="email">
+          <span class="label">邮箱</span>
+          <el-input
+            class="input"
+            v-model.trim="profile.email"
+            maxlength="50"
+            spellcheck="false"
+            clearable
+            @focus="formRef.clearValidate('email')"
+          >
+            <template #prefix><icon-ep-message /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item class="form-item" prop="phone">
+          <span class="label">手机号</span>
+          <el-input
+            class="input"
+            v-model.trim="profile.phone"
+            spellcheck="false"
+            clearable
+            @focus="formRef.clearValidate('phone')"
+          >
+            <template #prefix><icon-ep-phone /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item class="form-item" prop="region">
+          <span class="label">地区</span>
+          <el-cascader
+            v-model="profile.region"
+            :options="regions"
+            :props="{ value: 'name', label: 'name', children: 'city' }"
+            separator="-"
+            placeholder="请选择地区"
+            filterable
+            clearable
+          />
+        </el-form-item>
+        <el-form-item class="form-item" prop="introduction">
+          <span class="label">个人介绍</span>
           <el-input
             type="textarea"
             v-model="profile.introduction"
@@ -88,20 +105,21 @@
             :rows="3"
             placeholder="用几句话介绍一下自己吧"
             resize="none"
+            spellcheck="false"
             show-word-limit
           />
-        </div>
+        </el-form-item>
         <el-button
-          class="save-button"
+          class="form-submit"
           type="primary"
           size="large"
           :loading="loading"
           :disabled="loading"
           @click="updateUserInfo(formRef)"
         >
-          {{ loading ? "保存中..." : "保存" }}
+          {{ loading ? "保存中..." : "保 存" }}
         </el-button>
-      </div>
+      </el-form>
     </el-drawer>
   </el-config-provider>
 </template>
@@ -143,7 +161,6 @@ export default {
     const close = (formEl) => {
       emit("update:show", false);
       formEl.resetFields();
-      profile.introduction = "";
     };
 
     const formRef = ref();
@@ -164,15 +181,25 @@ export default {
     };
     const rules = reactive({
       nickName: [
-        { required: true, message: "请输入您的昵称", trigger: "blur" },
+        { required: true, message: "昵称不能为空！", trigger: "blur" },
         { max: 11, message: "昵称长度不能超过11个字符！", trigger: "blur" },
       ],
       email: [
-        { required: true, message: "请输入您的邮箱", trigger: "blur" },
-        { max: 30, message: "邮箱长度不能超过30个字符！", trigger: "blur" },
+        { required: true, message: "邮箱不能为空！", trigger: "blur" },
+        {
+          pattern:
+            /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
+          message: "邮箱地址格式不正确！",
+          trigger: "blur",
+        },
       ],
       phone: [
-        { max: 20, message: "号码长度不能超过20个字符！", trigger: "blur" },
+        {
+          pattern:
+            /^(13[0-9]|14[01456879]|15[0-35-9]|16[2567]|17[0-8]|18[0-9]|19[0-35-9])\d{8}$/,
+          message: "手机号码格式不正确！",
+          trigger: "blur",
+        },
       ],
     });
     const updateUserInfo = async (formEl) => {
@@ -187,13 +214,19 @@ export default {
             birthday: profile.birthday,
             email: profile.email,
             phone: profile.phone,
-            region: profile.region[0] + " " + profile.region[1],
+            region:
+              profile.region.length > 0
+                ? profile.region[0] + " " + profile.region[1]
+                : "",
             introduction: profile.introduction,
           });
           if (result.code === 200) {
             ElMessage.success({ message: "保存成功", showClose: true });
           } else {
-            ElMessage.error({ message: "网络异常", showClose: true });
+            ElMessage.error({
+              message: "网络异常，请重试！",
+              showClose: true,
+            });
           }
           loading.value = false;
         } else {
@@ -252,27 +285,22 @@ export default {
   color: var(--color-danger);
 }
 .form {
-  width: 80%;
-  padding-top: 20px;
-  margin: auto;
+  padding: 0 60px;
 }
-.form .introduction {
-  display: flex;
-  flex-flow: column nowrap;
-  padding: 0 30px;
-  margin-bottom: 20px;
+.form .form-item {
+  margin-bottom: 14px;
 }
-.form .introduction span {
+.form .form-item .label {
+  width: 100%;
   font-size: 16px;
-  color: var(--text-color-regular);
-  margin-bottom: 10px;
 }
-.form .save-button {
-  margin-left: 30px;
+.form .form-item .input {
+  height: 45px;
 }
-.el-form-item {
-  padding: 0 30px;
-  margin-bottom: 20px;
-  --el-form-label-font-size: 16px;
+.form .form-submit {
+  width: 80%;
+  font-size: 16px;
+  margin-top: 20px;
+  margin-left: 25px;
 }
 </style>

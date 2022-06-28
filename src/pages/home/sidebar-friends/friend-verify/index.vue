@@ -2,146 +2,146 @@
   <el-dialog
     v-model="isShow"
     title="新朋友"
-    width="30%"
+    width="26%"
     destroy-on-close
     @closed="close"
   >
-    <div v-show="!showAgreeForm">
-      <el-table
-        :data="friendVerifyList"
-        height="400"
-        size="large"
-        :show-header="false"
-      >
-        <template #empty>
-          <el-empty description="还没有新朋友? 赶快去添加吧">
-            <template #image><icon-mdi-account-convert /></template>
-          </el-empty>
-        </template>
-        <el-table-column type="expand">
-          <template #default="{ row }">
-            <div class="apply-message">
-              <span>申请理由：{{ row.applyReason }}</span>
-            </div>
+    <div class="new-friends">
+      <div v-show="!showAgreeForm">
+        <el-table
+          :data="friendVerifyList"
+          height="450"
+          size="large"
+          :show-header="false"
+        >
+          <template #empty>
+            <el-empty description="还没有新朋友? 赶快去添加吧">
+              <template #image><icon-mdi-account-convert /></template>
+            </el-empty>
           </template>
-        </el-table-column>
-        <el-table-column>
-          <template #default="{ row }">
-            <div class="verify-info">
-              <figure>
-                <el-avatar
-                  :src="
-                    row.senderId === user.userId
-                      ? row.receiverAvatar
-                      : row.senderAvatar
-                  "
-                  :size="50"
-                  shape="square"
-                  @error="() => true"
-                >
-                  <img
-                    src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                  />
-                </el-avatar>
-              </figure>
-              <div>
-                <span>
-                  {{
-                    row.senderId === user.userId
-                      ? row.receiverNickName
-                      : row.senderNickName
-                  }}
-                </span>
-                <p>
-                  {{
-                    row.senderId === user.userId
-                      ? "请求添加对方为好友"
-                      : "请求添加你为好友"
-                  }}
-                </p>
+          <el-table-column type="expand">
+            <template #default="{ row }">
+              <div class="apply-message">
+                <span>申请理由：{{ row.applyReason }}</span>
               </div>
-            </div>
-          </template>
-        </el-table-column>
-        <el-table-column width="160" align="center">
-          <template #default="{ row, $index }">
-            <span v-if="row.senderId === user.userId">
-              {{
-                row.status === 0
-                  ? "等待验证"
-                  : row.status === 1
-                  ? "对方已同意"
-                  : row.status === 2
-                  ? "对方已拒绝"
-                  : "已过期"
-              }}
-            </span>
-            <div v-else>
-              <el-button-group v-if="row.status === 0">
-                <el-button type="primary" @click="agreeApply(row)"
-                  >同意</el-button
-                >
-                <el-button type="danger" @click="rejectApply(row, $index)"
-                  >拒绝</el-button
-                >
-              </el-button-group>
-              <span v-else>
+            </template>
+          </el-table-column>
+          <el-table-column>
+            <template #default="{ row }">
+              <div class="verify-info">
+                <figure>
+                  <el-avatar
+                    :src="
+                      row.senderId === user.userId
+                        ? row.receiverAvatar
+                        : row.senderAvatar
+                    "
+                    :size="50"
+                    shape="square"
+                    @error="() => true"
+                  >
+                    <img
+                      src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                    />
+                  </el-avatar>
+                </figure>
+                <div>
+                  <span>
+                    {{
+                      row.senderId === user.userId
+                        ? row.receiverNickName
+                        : row.senderNickName
+                    }}
+                  </span>
+                  <p>
+                    {{
+                      row.senderId === user.userId
+                        ? "请求添加对方为好友"
+                        : "请求添加你为好友"
+                    }}
+                  </p>
+                </div>
+              </div>
+            </template>
+          </el-table-column>
+          <el-table-column width="160" align="center">
+            <template #default="{ row, $index }">
+              <span v-if="row.senderId === user.userId">
                 {{
-                  row.status === 1
-                    ? "已同意"
+                  row.status === 0
+                    ? "等待验证"
+                    : row.status === 1
+                    ? "对方已同意"
                     : row.status === 2
-                    ? "已拒绝"
+                    ? "对方已拒绝"
                     : "已过期"
                 }}
               </span>
+              <div v-else>
+                <el-button-group v-if="row.status === 0">
+                  <el-button type="primary" @click="agreeApply(row)"
+                    >同意</el-button
+                  >
+                  <el-button type="danger" @click="rejectApply(row, $index)"
+                    >拒绝</el-button
+                  >
+                </el-button-group>
+                <span v-else>
+                  {{
+                    row.status === 1
+                      ? "已同意"
+                      : row.status === 2
+                      ? "已拒绝"
+                      : "已过期"
+                  }}
+                </span>
+              </div>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
+      <div v-if="showAgreeForm" class="agree-form">
+        <el-form
+          ref="formRef"
+          :model="friend"
+          :rules="rules"
+          hide-required-asterisk
+        >
+          <div class="userinfo">
+            <figure>
+              <el-avatar
+                :src="friend.avatar"
+                :size="60"
+                shape="square"
+                @error="() => true"
+              >
+                <img
+                  src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                />
+              </el-avatar>
+            </figure>
+            <div>
+              <span>{{ friend.nickName }}</span>
+              <p>
+                申请理由：{{ friend.applyReason ? friend.applyReason : "无" }}
+              </p>
             </div>
-          </template>
-        </el-table-column>
-      </el-table>
-    </div>
-    <div v-if="showAgreeForm" class="agree-form">
-      <el-form
-        ref="formRef"
-        :model="friend"
-        :rules="rules"
-        label-width="90px"
-        hide-required-asterisk
-      >
-        <div class="userinfo">
-          <figure>
-            <el-avatar
-              :src="friend.avatar"
-              :size="60"
-              shape="square"
-              @error="() => true"
-            >
-              <img
-                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-              />
-            </el-avatar>
-          </figure>
-          <div>
-            <span>{{ friend.nickName }}</span>
-            <p>
-              申请理由：{{ friend.applyReason ? friend.applyReason : "无" }}
-            </p>
           </div>
-        </div>
-        <el-form-item prop="remark">
-          <template #label>
+          <el-form-item prop="remark">
             <span class="label">好友备注</span>
-          </template>
-          <el-input
-            class="remark-input"
-            v-model.trim="friend.remark"
-            :placeholder="friend.nickName"
-            size="large"
-            clearable
-          >
-            <template #suffix><icon-ep-tickets /></template>
-          </el-input>
-        </el-form-item>
-      </el-form>
+            <el-input
+              v-model.trim="friend.remark"
+              :placeholder="friend.nickName"
+              size="large"
+              spellcheck="false"
+              clearable
+              @focus="formRef.clearValidate('remark')"
+            >
+              <template #suffix><icon-ep-tickets /></template>
+            </el-input>
+          </el-form-item>
+        </el-form>
+      </div>
     </div>
     <template v-if="showAgreeForm" #footer>
       <span>
@@ -276,6 +276,10 @@ export default {
 </script>
 
 <style scoped>
+.new-friends {
+  padding: 20px 0;
+  padding-top: 0;
+}
 .apply-message {
   margin-left: 64px;
 }
@@ -300,13 +304,12 @@ export default {
 }
 .agree-form {
   display: flex;
-  width: 80%;
   flex-flow: column nowrap;
-  margin: auto;
+  padding: 0 80px;
 }
 .agree-form .userinfo {
   display: flex;
-  margin-left: 50px;
+  margin-top: 20px;
   margin-bottom: 30px;
 }
 .agree-form .userinfo figure {
@@ -331,8 +334,5 @@ export default {
 }
 .agree-form .label {
   font-size: 16px;
-}
-.agree-form .remark-input {
-  margin-right: 50px;
 }
 </style>

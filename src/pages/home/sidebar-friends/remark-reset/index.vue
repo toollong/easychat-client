@@ -8,50 +8,54 @@
     @closed="close(formRef)"
   >
     <div class="remark-reset">
-      <div class="form">
-        <el-form
-          ref="formRef"
-          :model="friend"
-          :rules="rules"
-          label-width="100px"
-          hide-required-asterisk
-        >
-          <el-form-item>
-            <template #label>
-              <span class="label">好友昵称</span>
-            </template>
-            <div class="value">
-              <icon-mdi-account style="font-size: 20px" />
-              <span>{{ friend.nickName }}</span>
-            </div>
-          </el-form-item>
-          <el-form-item prop="remark">
-            <template #label>
-              <span class="label">好友备注</span>
-            </template>
-            <el-input
-              v-model.trim="friend.remark"
-              :placeholder="friend.nickName"
-              size="large"
-              clearable
-            >
-              <template #suffix><icon-ep-tickets /></template>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-button
-              type="primary"
-              :loading="loading"
-              :disabled="loading"
-              size="large"
-              @click="resetRemark(formRef)"
-            >
-              {{ loading ? "保存中..." : "保存" }}
-            </el-button>
-            <el-button size="large" @click="isShow = false">返回</el-button>
-          </el-form-item>
-        </el-form>
-      </div>
+      <el-form
+        ref="formRef"
+        class="form"
+        :model="friend"
+        :rules="rules"
+        label-width="100px"
+        hide-required-asterisk
+      >
+        <el-form-item>
+          <template #label>
+            <span class="label">好友昵称</span>
+          </template>
+          <div class="value">
+            <icon-mdi-account style="font-size: 20px" />
+            <span>{{ friend.nickName }}</span>
+          </div>
+        </el-form-item>
+        <el-form-item prop="remark">
+          <template #label>
+            <span class="label">好友备注</span>
+          </template>
+          <el-input
+            v-model.trim="friend.remark"
+            :placeholder="friend.nickName"
+            size="large"
+            spellcheck="false"
+            clearable
+            @focus="formRef.clearValidate('remark')"
+          >
+            <template #suffix><icon-ep-tickets /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            class="form-button"
+            type="primary"
+            :loading="loading"
+            :disabled="loading"
+            size="large"
+            @click="resetRemark(formRef)"
+          >
+            {{ loading ? "保存中..." : "保存" }}
+          </el-button>
+          <el-button class="form-button" size="large" @click="isShow = false">
+            取消
+          </el-button>
+        </el-form-item>
+      </el-form>
     </div>
   </el-dialog>
 </template>
@@ -170,13 +174,10 @@ export default {
 
 <style scoped>
 .remark-reset {
-  display: flex;
-  flex-flow: column nowrap;
-  align-items: center;
+  padding: 20px 40px;
 }
 .remark-reset .form {
   display: flex;
-  width: 80%;
   flex-flow: column nowrap;
   margin-top: 20px;
   margin-right: 50px;
@@ -192,6 +193,10 @@ export default {
 }
 .remark-reset .form .value span {
   font-weight: 600;
-  margin-left: 10px;
+  margin-left: 2px;
+}
+.remark-reset .form .form-button {
+  width: 40%;
+  margin-top: 20px;
 }
 </style>
