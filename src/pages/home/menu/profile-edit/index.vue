@@ -296,6 +296,7 @@ export default {
 }
 .form .form-item .input {
   height: 45px;
+  font-size: 15px;
 }
 .form .form-submit {
   width: 80%;
