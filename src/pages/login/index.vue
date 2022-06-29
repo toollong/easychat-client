@@ -46,7 +46,7 @@
           </el-input>
         </el-form-item>
         <div class="form-options">
-          <router-link to="/password">忘记密码</router-link>
+          <router-link to="/findPassword">忘记密码</router-link>
         </div>
         <el-button
           class="form-submit"
