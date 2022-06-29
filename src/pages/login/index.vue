@@ -19,6 +19,7 @@
             maxlength="11"
             placeholder="请输入用户名"
             spellcheck="false"
+            clearable
             @focus="formRef.clearValidate('username')"
           >
             <template #prefix>
@@ -36,6 +37,7 @@
             placeholder="请输入密码"
             spellcheck="false"
             show-password
+            clearable
             @focus="formRef.clearValidate('password')"
           >
             <template #prefix>
@@ -286,6 +288,7 @@ export default {
 }
 .login-body .form .form-item .input {
   height: 45px;
+  font-size: 15px;
 }
 .login-body .form .form-options {
   display: flex;
