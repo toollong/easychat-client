@@ -8,7 +8,7 @@
   >
     <div class="friend-add">
       <div class="user-search" v-show="!showApplyForm">
-        <el-alert title="输入用户名搜索用户" type="success" center />
+        <el-alert title="输入用户名搜索用户" type="info" center />
         <el-input
           class="search"
           v-model.trim="username"

@@ -8,7 +8,7 @@
       @closed="close"
     >
       <div class="chat-add">
-        <el-alert title="选择一个好友开始聊天" type="success" center />
+        <el-alert title="选择一个好友开始聊天" type="info" center />
         <div class="select">
           <span>好友</span>
           <el-select
