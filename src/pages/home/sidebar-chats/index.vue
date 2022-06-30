@@ -41,7 +41,7 @@
         </div>
         <p>聊天，是最好的陪伴。</p>
       </header>
-      <form @submit.prevent="">
+      <form @submit.prevent>
         <el-autocomplete
           v-model="searchValue"
           :fetch-suggestions="search"

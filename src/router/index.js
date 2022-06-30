@@ -18,9 +18,9 @@ const routes = [
         name: 'home'
     },
     {
-        path: '/password',
-        component: () => import('@/pages/password-reset'),
-        name: 'passwordReset'
+        path: '/findPassword',
+        component: () => import('@/pages/password'),
+        name: 'findPassword'
     },
     {
         path: '/',
@@ -34,7 +34,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.path === "/login" || to.path === "/register" || to.path === "/password") {
+    if (to.path === "/login" || to.path === "/register" || to.path === "/findPassword") {
         return next();
     }
     const uid = getCookie("uid");

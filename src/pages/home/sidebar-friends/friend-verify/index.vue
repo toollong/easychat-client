@@ -106,6 +106,7 @@
           :model="friend"
           :rules="rules"
           hide-required-asterisk
+          @submit.prevent
         >
           <div class="userinfo">
             <figure>

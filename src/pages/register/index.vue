@@ -57,7 +57,6 @@
             placeholder="邮箱"
             spellcheck="false"
             @focus="hideVerifyCode"
-            @blur="checkEmail"
           />
           <span class="tip">可通过该邮箱找回密码</span>
         </el-form-item>
@@ -143,6 +142,21 @@ export default {
         callback();
       }
     };
+    const validateEmail = (rule, value, callback) => {
+      if (value === "") {
+        callback(new Error("请填写邮箱地址！"));
+      } else {
+        let pattern = new RegExp(
+          /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
+        );
+        if (!pattern.test(value)) {
+          callback(new Error("邮箱格式不正确，请填写正确的邮箱地址！"));
+        } else {
+          showVerifyCode.value = true;
+          callback();
+        }
+      }
+    };
     const validateCheckbox = (rule, value, callback) => {
       if (!registerForm.isAgree) {
         callback(new Error("请先同意服务条款和隐私政策！"));
@@ -207,15 +221,7 @@ export default {
           trigger: "blur",
         },
       ],
-      email: [
-        { required: true, message: "请填写邮箱地址！", trigger: "blur" },
-        {
-          pattern:
-            /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/,
-          message: "邮箱格式不正确，请填写正确的邮箱地址！",
-          trigger: "blur",
-        },
-      ],
+      email: [{ validator: validateEmail, trigger: "blur" }],
       checkbox: [{ validator: validateCheckbox, trigger: "submit" }],
       verifyCode: [{ validator: validateVerifyCode, trigger: "submit" }],
     });
@@ -257,37 +263,32 @@ export default {
       );
     };
 
-    const checkEmail = () => {
-      let pattern = new RegExp(
-        /^[A-Za-z\d]+([-_.][A-Za-z\d]+)*@([A-Za-z\d]+[-.])+[A-Za-z\d]{2,4}$/
-      );
-      if (registerForm.email && pattern.test(registerForm.email)) {
-        showVerifyCode.value = true;
-      }
-    };
+    const showVerifyCode = ref(false);
     const hideVerifyCode = () => {
       formRef.value.clearValidate("email");
       showVerifyCode.value = false;
     };
-
-    const showVerifyCode = ref(false);
     const showCount = ref(false);
     const count = ref(-1);
     const timer = ref();
     const getVerifyCode = () => {
       // 发送验证码
-      if (!timer.value) {
-        count.value = 60;
-        showCount.value = true;
-        timer.value = setInterval(() => {
-          if (count.value > 0 && count.value <= 60) {
-            count.value--;
-          } else {
-            showCount.value = false;
-            clearInterval(timer.value);
-            timer.value = null;
-          }
-        }, 1000);
+      if (1 === 1) {
+        if (!timer.value) {
+          count.value = 60;
+          showCount.value = true;
+          timer.value = setInterval(() => {
+            if (count.value > 0 && count.value <= 60) {
+              count.value--;
+            } else {
+              showCount.value = false;
+              clearInterval(timer.value);
+              timer.value = null;
+            }
+          }, 1000);
+        }
+      } else {
+        ElMessage.error("验证码发送失败，请重试！");
       }
     };
 
@@ -297,9 +298,8 @@ export default {
       registerForm,
       rules,
       register,
-      checkEmail,
-      hideVerifyCode,
       showVerifyCode,
+      hideVerifyCode,
       showCount,
       count,
       getVerifyCode,
@@ -320,14 +320,16 @@ export default {
 .register .register-header {
   margin: auto;
   margin-top: 50px;
+  margin-bottom: 0;
 }
 .register .register-body {
   width: 1000px;
   height: 660px;
-  margin: auto;
   padding: 20px;
+  margin: 0 auto;
 }
 .register .register-footer {
+  color: #969696;
   margin: auto;
   margin-bottom: 80px;
 }
@@ -390,9 +392,6 @@ export default {
 }
 .register-body .form .to-login a:hover {
   color: #79bbff;
-}
-.register-footer {
-  color: #969696;
 }
 .el-input {
   --el-input-text-color: #606266;

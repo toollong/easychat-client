@@ -56,7 +56,7 @@
         </div>
         <p>遇见，是故事的开始。</p>
       </header>
-      <form @submit.prevent="">
+      <form @submit.prevent>
         <el-input
           v-model="searchValue"
           :maxlength="11"
