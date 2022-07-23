@@ -72,7 +72,7 @@
 <script>
 import { inject, reactive, ref, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { reqChangePassword } from "@/api";
+import { reqChangePassword, reqValidatePassword } from "@/api";
 
 export default {
   name: "PasswordReset",
@@ -97,17 +97,20 @@ export default {
       newPassword: "",
       checkPassword: "",
     });
-    const validateOldPassword = (rule, value, callback) => {
-      // 发送请求判断原密码是否正确
-      if (value !== "n1234567") {
-        callback(new Error("原密码不正确！"));
-      } else {
+    const validateOldPassword = async (rule, value, callback) => {
+      let result = await reqValidatePassword({
+        userId: user.userId,
+        password: value,
+      });
+      if (result.success) {
         callback();
+      } else {
+        callback(new Error("原密码不正确！"));
       }
     };
     const validateNewPassword = (rule, value, callback) => {
       if (value === form.oldPassword) {
-        callback(new Error("新密码与原密码不能相同！"));
+        callback(new Error("新密码不能与原密码相同！"));
       } else {
         callback();
       }
@@ -160,7 +163,6 @@ export default {
                   loading.value = true;
                   let result = await reqChangePassword({
                     userId: user.userId,
-                    oldPassword: form.oldPassword,
                     newPassword: form.newPassword,
                     checkPassword: form.checkPassword,
                   });

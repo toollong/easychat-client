@@ -4,7 +4,7 @@
         "friendUserId": "20000000005",
         "friendRemark": "老王",
         "friendNickName": "王五",
-        "friendAvatar": "/images/avatar1.jpg",
+        "friendAvatar": "/images/avatar1.jpeg",
         "introduction": "",
         "friendTags": [
             "时间管理大师",
@@ -17,7 +17,7 @@
     {
         "userId": "20000000001",
         "friendUserId": "20000000003",
-        "friendRemark": "老张",
+        "friendRemark": "单身狗",
         "friendNickName": "张三",
         "friendAvatar": "/images/avatar2.jpg",
         "introduction": "",

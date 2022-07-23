@@ -38,10 +38,10 @@ router.beforeEach((to, from, next) => {
         return next();
     }
     const uid = getCookie("uid");
-    if (uid === null) {
-        return next("/login");
+    if (uid !== null && new RegExp(/\d{19}/).test(uid)) {
+        return next();
     }
-    return next();
+    return next("/login");
 })
 
 export default router

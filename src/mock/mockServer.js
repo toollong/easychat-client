@@ -8,7 +8,7 @@ const userInfo = {
     code: 200, data: {
         id: "20000000001",
         username: "1234567890",
-        avatar: "/images/avatar2.jpg",
+        avatar: "/images/avatar1.jpeg",
         nickName: "无敌",
         gender: "1",
         age: 20,

@@ -11,13 +11,15 @@ const requests = axios.create({
 requests.interceptors.request.use((config) => {
     nprogress.start();
     return config;
+}, (error) => {
+    return Promise.reject(new Error("网络异常！"));
 })
 
-requests.interceptors.response.use((res) => {
+requests.interceptors.response.use((response) => {
     nprogress.done();
-    return res.data;
+    return response.data;
 }, (error) => {
-    return Promise.reject(new Error("response failed..."));
+    return Promise.reject(new Error("网络异常！"));
 })
 
 export default requests;

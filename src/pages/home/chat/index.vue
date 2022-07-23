@@ -4,7 +4,7 @@
       <div class="header-user">
         <figure>
           <el-avatar
-            :src="friend.avatar"
+            :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
             size="large"
             shape="square"
             @error="() => true"
@@ -75,7 +75,7 @@
     </header>
     <el-scrollbar ref="scrollbarRef">
       <div class="chat-body" ref="chatBodyRef">
-        <div class="messages">
+        <div class="messages" v-if="chatHistoryList.length > 0">
           <div
             class="message-item"
             v-for="message in chatHistoryList"
@@ -112,7 +112,11 @@
                 </el-avatar>
               </div>
               <div v-else class="header">
-                <el-avatar :src="friend.avatar" :size="45" @error="() => true">
+                <el-avatar
+                  :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
+                  :size="45"
+                  @error="() => true"
+                >
                   <img
                     src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
                   />
@@ -594,14 +598,14 @@ export default {
   font-size: 15px;
   background-color: var(--color-info-light-8);
   border-radius: 7px;
-  margin-left: 45px;
+  margin-left: 50px;
   padding: 10px 15px;
 }
 .chat-body .messages .message-item.send .message .content {
   background-color: var(--color-primary);
   color: var(--bg-color);
   margin-left: 0;
-  margin-right: 45px;
+  margin-right: 50px;
 }
 .chat-body .messages .message-item .message .content-image {
   display: flex;

@@ -146,7 +146,7 @@
           </el-form>
           <el-result class="result" v-show="active === 3" icon="success">
             <template #title>
-              <span class="message">密码设置成功</span>
+              <span class="message">密码重置成功</span>
             </template>
             <template #extra>
               <router-link to="/login">返回登录</router-link>
@@ -185,7 +185,13 @@
 <script>
 import { reactive, ref } from "vue";
 import { ElMessage } from "element-plus";
-import { reqChangePassword } from "@/api";
+import {
+  reqChangePassword,
+  reqSendCode,
+  reqValidateCode,
+  reqValidatePassword,
+  reqValidateUsername,
+} from "@/api";
 import { encryptEmail } from "@/utils/encrypt";
 import SlideVerify from "vue3-slide-verify";
 
@@ -196,11 +202,7 @@ export default {
   },
   setup() {
     const active = ref(0);
-    const user = reactive({
-      userId: "",
-      password: "",
-      email: "",
-    });
+    const user = reactive({ userId: "", email: "" });
 
     const firstFormRef = ref();
     const firstForm = reactive({ username: "" });
@@ -239,15 +241,18 @@ export default {
         callback();
       }
     };
-    const validateVerifyCode = (rule, value, callback) => {
+    const validateVerifyCode = async (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请填写验证码！"));
       } else {
-        // 发送请求验证邮箱和验证码是否匹配
-        if (value !== "123456") {
-          callback(new Error("验证码错误，请重新填写！"));
-        } else {
+        let result = await reqValidateCode({
+          email: secondForm.email,
+          verifyCode: value,
+        });
+        if (result.success) {
           callback();
+        } else {
+          callback(new Error("验证码错误，请重新填写！"));
         }
       }
     };
@@ -274,7 +279,7 @@ export default {
 
     const thirdFormRef = ref();
     const thirdForm = reactive({ newPassword: "", checkPassword: "" });
-    const validateNewPassword = (rule, value, callback) => {
+    const validateNewPassword = async (rule, value, callback) => {
       if (value === "") {
         callback(new Error("密码不能为空！"));
       } else {
@@ -283,10 +288,16 @@ export default {
         );
         if (!pattern.test(value)) {
           callback(new Error("密码格式错误，请修改后重试！"));
-        } else if (value === user.password) {
-          callback(new Error("新密码与原密码不能相同！"));
         } else {
-          callback();
+          let result = await reqValidatePassword({
+            userId: user.userId,
+            password: value,
+          });
+          if (result.success) {
+            callback(new Error("新密码不能与原密码相同！"));
+          } else {
+            callback();
+          }
         }
       }
     };
@@ -312,12 +323,11 @@ export default {
               active.value = 3;
               // let result = await reqChangePassword({
               //   userId: user.userId,
-              //   oldPassword: user.password,
               //   newPassword: thirdForm.newPassword,
               //   checkPassword: thirdForm.checkPassword,
               // });
-              // if (result.code === 200) {
-              //   ElMessage.success("操作完成！");
+              // if (result.success) {
+              //   active.value = 3;
               // } else {
               //   ElMessage.error("网络异常，请重试！");
               // }
@@ -345,17 +355,18 @@ export default {
     };
     const onSuccess = (time) => {
       successMsg.value = "验证通过，耗时 " + (time / 1000).toFixed(1) + " s";
-      setTimeout(() => {
+      setTimeout(async () => {
         showVerification.value = false;
         successMsg.value = "";
-        // 查找数据库中该用户名是否存在，若存在，拿到用户信息
-        if (firstForm.username !== "n12345") {
-          ElMessage.error("用户名错误，请重新输入！");
-        } else {
-          user.userId = "20000000001";
-          user.password = "n1234567";
-          user.email = "1697682951@qq.com";
+        let result = await reqValidateUsername({
+          username: firstForm.username,
+        });
+        if (result.success) {
+          user.userId = result.data.userId;
+          user.email = result.data.email;
           active.value = 1;
+        } else {
+          ElMessage.error("用户名错误，请重新输入！");
         }
       }, 1000);
     };
@@ -367,8 +378,7 @@ export default {
       "/images/verify/image5.jpeg",
       "/images/verify/image6.jpeg",
       "/images/verify/image7.jpeg",
-      "/images/verify/image8.jpg",
-      "/images/verify/image9.jpeg",
+      "/images/verify/image8.jpeg",
     ];
 
     const showCount = ref(false);
@@ -377,23 +387,24 @@ export default {
     const sendVerifyCode = async () => {
       await secondFormRef.value.validateField("email", (valid) => {
         if (valid) {
-          // 发送验证码
-          if (1 === 1) {
-            if (!timer.value) {
-              count.value = 60;
-              showCount.value = true;
-              timer.value = setInterval(() => {
-                if (count.value > 0 && count.value <= 60) {
-                  count.value--;
-                } else {
-                  showCount.value = false;
-                  clearInterval(timer.value);
-                  timer.value = null;
-                }
-              }, 1000);
-            }
-          } else {
-            ElMessage.error("验证码发送失败，请重试！");
+          let value = getCookie("verify");
+          if (value) {
+            ElMessage.error("验证码发送频繁，请稍后重试！");
+            return;
+          }
+          reqSendCode({ email: secondForm.email, type: 1 });
+          if (!timer.value) {
+            count.value = 60;
+            showCount.value = true;
+            timer.value = setInterval(() => {
+              if (count.value > 0 && count.value <= 60) {
+                count.value--;
+              } else {
+                showCount.value = false;
+                clearInterval(timer.value);
+                timer.value = null;
+              }
+            }, 1000);
           }
         } else {
           return false;
@@ -552,7 +563,7 @@ export default {
 }
 .password-body .result a {
   font-size: 18px;
-  color: #409eff;
+  color: #0a80ff;
   text-decoration: none;
 }
 .password-body .result a:hover {
@@ -562,7 +573,7 @@ export default {
   --el-input-text-color: #606266;
   --el-input-border: 1px solid #dcdfe6;
   --el-input-hover-border: #c0c4cc;
-  --el-input-focus-border: #409eff;
+  --el-input-focus-border: #0a80ff;
   --el-input-transparent-border: 0 0 0 1px transparent inset;
   --el-input-border-color: #dcdfe6;
   --el-input-border-radius: 4px;
@@ -571,18 +582,21 @@ export default {
   --el-input-placeholder-color: #a8abb2;
   --el-input-hover-border-color: #c0c4cc;
   --el-input-clear-hover-color: #909399;
-  --el-input-focus-border-color: #409eff;
+  --el-input-focus-border-color: #0a80ff;
 }
 .el-button--primary {
+  --el-button-bg-color: #0a80ff;
+  --el-button-border-color: #0a80ff;
   --el-button-hover-link-text-color: #a0cfff;
-  --el-button-hover-bg-color: #79bbff;
-  --el-button-hover-border-color: #79bbff;
+  --el-button-hover-bg-color: #409eff;
+  --el-button-hover-border-color: #409eff;
   --el-button-active-bg-color: #337ecc;
   --el-button-active-border-color: #337ecc;
   --el-button-disabled-bg-color: #a0cfff;
   --el-button-disabled-border-color: #a0cfff;
 }
 .el-button--primary.is-plain {
+  --el-button-text-color: #0a80ff;
   --el-button-bg-color: #ecf5ff;
   --el-button-border-color: #a0cfff;
 }

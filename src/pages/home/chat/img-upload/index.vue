@@ -1,26 +1,13 @@
 <template>
   <div class="img-upload">
-    <el-upload action="#" list-type="picture-card" :auto-upload="false">
+    <el-upload
+      action="#"
+      list-type="picture-card"
+      :auto-upload="false"
+      :on-preview="previewPicture"
+      :on-remove="removePicture"
+    >
       <icon-ep-plus />
-      <template #file="{ file }">
-        <div>
-          <img class="el-upload-list__item-thumbnail" :src="file.url" />
-          <span class="el-upload-list__item-actions">
-            <span
-              class="el-upload-list__item-preview"
-              @click="previewPicture(file)"
-            >
-              <icon-ep-zoom-in />
-            </span>
-            <span class="el-upload-list__item-delete">
-              <icon-ep-download />
-            </span>
-            <span class="el-upload-list__item-delete">
-              <icon-ep-delete />
-            </span>
-          </span>
-        </div>
-      </template>
     </el-upload>
     <el-dialog v-model="dialogVisible">
       <el-image :src="dialogImageUrl" fit="contain" />
@@ -36,15 +23,19 @@ export default {
   setup() {
     const dialogImageUrl = ref("");
     const dialogVisible = ref(false);
-    const previewPicture = (file) => {
-      dialogImageUrl.value = file.url;
+    const previewPicture = (uploadFile) => {
+      dialogImageUrl.value = uploadFile.url;
       dialogVisible.value = true;
+    };
+    const removePicture = (uploadFile, uploadFiles) => {
+      console.log(uploadFile, uploadFiles);
     };
 
     return {
       dialogVisible,
       dialogImageUrl,
       previewPicture,
+      removePicture,
     };
   },
 };

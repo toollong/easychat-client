@@ -20,21 +20,47 @@
       </div>
     </template>
     <div class="settings">
+      <div class="avatar">
+        <span class="label">头像</span>
+        <el-upload
+          ref="uploadRef"
+          class="avatar-uploader"
+          action="/api/user/user/changeAvatar"
+          :data="{ id: user.userId }"
+          :show-file-list="false"
+          :auto-upload="false"
+          :on-change="checkImage"
+          :on-success="uploadSucceed"
+          :on-error="uploadFailed"
+        >
+          <el-image class="image" :src="avatarUrl" />
+        </el-upload>
+        <el-button
+          class="avatar-submit"
+          v-if="avatarUrl !== user.avatar"
+          :loading="avatarLoading"
+          :disabled="avatarLoading"
+          plain
+          @click="saveAvatar"
+        >
+          {{ avatarLoading ? "保存中..." : "保存" }}
+        </el-button>
+      </div>
       <div class="status">
-        <span class="status-label">状态</span>
+        <span class="label">状态</span>
         <el-switch
           v-model="online"
           active-color="#13ce66"
           inactive-color="#ff4949"
           active-text="在线"
           inactive-text="隐身"
-          :loading="loading"
+          :loading="statusLoading"
           :before-change="changeStatus"
           size="default"
         />
       </div>
       <div class="tags">
-        <span class="tags-label">标签</span>
+        <span class="label">标签</span>
         <el-space wrap>
           <el-tag
             class="tags-item"
@@ -72,7 +98,7 @@
 </template>
 
 <script>
-import { nextTick, ref, toRefs, watch } from "vue";
+import { inject, nextTick, ref, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
 import PasswordReset from "@/pages/home/menu/settings/password-reset";
 
@@ -86,9 +112,13 @@ export default {
   },
   emits: ["update:show"],
   setup(props, { emit }) {
+    const user = inject("user");
+    const reload = inject("reload");
+
     const { show } = toRefs(props);
     const isShow = ref(false);
-    const open = async () => {
+    const open = () => {
+      avatarUrl.value = user.avatar;
       online.value = true;
       tags.value = ["程序员", "时间管理大师"];
     };
@@ -96,14 +126,44 @@ export default {
       emit("update:show", false);
     };
 
+    const uploadRef = ref();
+    const avatarUrl = ref("");
+    const avatarLoading = ref(false);
+    const checkImage = (uploadFile) => {
+      if (
+        uploadFile.raw.type !== "image/jpeg" &&
+        uploadFile.raw.type !== "image/png"
+      ) {
+        ElMessage.error("上传的图片仅支持 JPG 或 PNG 格式！");
+        return;
+      }
+      if (uploadFile.size / 1024 / 1024 > 2) {
+        ElMessage.error("上传的图片大小不能超过 2M ！");
+        return;
+      }
+      avatarUrl.value = URL.createObjectURL(uploadFile.raw);
+    };
+    const uploadSucceed = () => {
+      ElMessage.success({ message: "保存成功", showClose: true });
+      reload();
+    };
+    const uploadFailed = () => {
+      ElMessage.error({ message: "网络异常", showClose: true });
+      avatarLoading.value = false;
+    };
+    const saveAvatar = () => {
+      avatarLoading.value = true;
+      uploadRef.value.submit();
+    };
+
     const online = ref(true);
-    const loading = ref(false);
+    const statusLoading = ref(false);
     const changeStatus = () => {
-      loading.value = true;
+      statusLoading.value = true;
       return new Promise((resolve) => {
         setTimeout(() => {
           ElMessage.success({ message: "设置成功", showClose: true });
-          loading.value = false;
+          statusLoading.value = false;
           return resolve(true);
         }, 1000);
       });
@@ -149,11 +209,19 @@ export default {
     });
 
     return {
+      user,
       isShow,
       open,
       close,
+      uploadRef,
+      avatarUrl,
+      avatarLoading,
+      checkImage,
+      uploadSucceed,
+      uploadFailed,
+      saveAvatar,
       online,
-      loading,
+      statusLoading,
       changeStatus,
       tags,
       inputRef,
@@ -200,31 +268,55 @@ export default {
   font-size: 16px;
   padding: 20px 60px;
 }
-.status {
+.settings .label {
+  margin-right: 40px;
+}
+.avatar {
   display: flex;
   align-items: center;
 }
-.status-label {
-  margin-right: 30px;
+.avatar .avatar-uploader {
+  height: 100px;
+  width: 100px;
+  border: 1px dashed var(--border-color);
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  transition: 0.2s;
+}
+.avatar .avatar-uploader:hover {
+  border-color: var(--color-primary);
+}
+.avatar .image {
+  display: block;
+  height: 100px;
+  width: 100px;
+}
+.avatar .avatar-submit {
+  align-self: flex-end;
+  margin-left: 10px;
+}
+.status {
+  display: flex;
+  align-items: center;
+  margin-top: 30px;
 }
 .tags {
   display: flex;
   flex-flow: row wrap;
   align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
 }
-.tags-label {
-  margin-right: 30px;
-}
-.tags-item {
+.tags .tags-item {
   margin-top: 5px;
 }
-.tags-input {
+.tags .tags-input {
   margin-top: 5px;
   width: 100px;
   height: 30px;
 }
 .password {
-  margin-top: 50px;
+  margin-top: 100px;
 }
 </style>

@@ -11,8 +11,7 @@
         size="large"
         @keyup.enter.exact="login(formRef)"
       >
-        <el-form-item class="form-item" prop="username">
-          <span class="label">用户名</span>
+        <el-form-item class="form-item username" prop="username">
           <el-input
             class="input"
             v-model.trim="loginForm.username"
@@ -27,8 +26,7 @@
             </template>
           </el-input>
         </el-form-item>
-        <el-form-item class="form-item" prop="password">
-          <span class="label">密码</span>
+        <el-form-item class="form-item password" prop="password">
           <el-input
             class="input"
             v-model.trim="loginForm.password"
@@ -46,7 +44,10 @@
           </el-input>
         </el-form-item>
         <div class="form-options">
-          <router-link to="/findPassword">忘记密码</router-link>
+          <el-checkbox id="checkbox" v-model="loginForm.loginFree">
+            7天内免登录
+          </el-checkbox>
+          <router-link to="/findPassword">忘记密码？</router-link>
         </div>
         <el-button
           class="form-submit"
@@ -57,14 +58,11 @@
           {{ loading ? "登录中..." : "登 录" }}
         </el-button>
       </el-form>
-      <p>
+      <p class="to-register">
         没有账号?
         <router-link to="/register">立即注册</router-link>
       </p>
-      <p>
-        登录即表示同意<a style="color: #969696">《用户协议》</a>
-        <a style="color: #969696">《隐私政策》</a>
-      </p>
+      <p class="tip">登录即表示同意<a>《用户协议》</a><a>《隐私政策》</a></p>
     </div>
     <div class="login-footer">
       <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
@@ -131,6 +129,7 @@ export default {
     const loginForm = reactive({
       username: "",
       password: "",
+      loginFree: false,
     });
     const rules = reactive({
       username: [
@@ -175,19 +174,14 @@ export default {
         showVerification.value = false;
         successMsg.value = "";
         loading.value = true;
-        setTimeout(() => {
-          setCookie("uid", "20000000001", 300);
+        let result = await reqLogin(loginForm);
+        if (result.success) {
           router.push({ name: "home" });
           ElMessage.success("登录成功！");
-        }, 1000);
-        // let result = await reqLogin(loginForm);
-        // if (result.code === 200) {
-        //   router.push({ name: "home" });
-        //   ElMessage.success("登录成功！");
-        // } else {
-        //   ElMessage.error("登录失败，用户名或密码不正确！");
-        // loading.value = false;
-        // }
+        } else {
+          ElMessage.error("登录失败，用户名或密码不正确！");
+          loading.value = false;
+        }
       }, 1000);
     };
     const images = [
@@ -198,8 +192,7 @@ export default {
       "/images/verify/image5.jpeg",
       "/images/verify/image6.jpeg",
       "/images/verify/image7.jpeg",
-      "/images/verify/image8.jpg",
-      "/images/verify/image9.jpeg",
+      "/images/verify/image8.jpeg",
     ];
 
     return {
@@ -259,7 +252,7 @@ export default {
   color: var(--color-white);
   text-align: center;
   position: fixed;
-  top: 800px;
+  bottom: 80px;
   left: 0;
   right: 0;
   margin: auto;
@@ -273,18 +266,17 @@ export default {
   font-size: 20px;
   font-weight: 600;
   margin-top: 20px;
+  margin-bottom: 15px;
 }
 .login-body .form {
   width: 100%;
   padding: 20px 40px;
 }
 .login-body .form .form-item {
-  margin-bottom: 10px;
+  margin-bottom: 26px;
 }
-.login-body .form .form-item .label {
-  height: 36px;
-  font-size: 16px;
-  color: #606266;
+.login-body .form .form-item.password {
+  margin-bottom: 20px;
 }
 .login-body .form .form-item .input {
   height: 45px;
@@ -292,56 +284,75 @@ export default {
 }
 .login-body .form .form-options {
   display: flex;
-  justify-content: flex-end;
+  height: 25px;
+  justify-content: space-between;
   align-items: center;
-  margin: 10px 0;
+  padding-left: 2px;
+  margin: 15px 0;
 }
 .login-body .form .form-options a {
-  color: #606266;
+  color: #0a80ff;
   text-decoration: none;
 }
 .login-body .form .form-options a:hover {
-  color: #409eff;
+  color: #79bbff;
 }
 .login-body .form .form-submit {
   width: 100%;
   font-size: 15px;
 }
-.login-body p {
+.login-body .to-register {
   color: #969696;
-  margin-top: 8px;
-  margin-bottom: 8px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 }
-.login-body p a {
-  color: #409eff;
+.login-body .to-register a {
+  color: #0a80ff;
   text-decoration: none;
-  cursor: pointer;
 }
-.login-body p a:hover {
+.login-body .to-register a:hover {
   color: #79bbff;
+}
+.login-body .tip {
+  color: #969696;
+  margin-top: 0;
+}
+.login-body .tip a {
+  cursor: pointer;
 }
 .el-input {
   --el-input-text-color: #606266;
   --el-input-border: 1px solid #dcdfe6;
   --el-input-hover-border: #c0c4cc;
-  --el-input-focus-border: #409eff;
+  --el-input-focus-border: #0a80ff;
   --el-input-transparent-border: 0 0 0 1px transparent inset;
   --el-input-border-color: #dcdfe6;
   --el-input-border-radius: 4px;
   --el-input-bg-color: #ffffff;
-  --el-input-icon-color: #a8abb2;
-  --el-input-placeholder-color: #a8abb2;
+  --el-input-icon-color: #909399;
+  --el-input-placeholder-color: #909399;
   --el-input-hover-border-color: #c0c4cc;
   --el-input-clear-hover-color: #909399;
-  --el-input-focus-border-color: #409eff;
+  --el-input-focus-border-color: #0a80ff;
 }
 .el-button--primary {
+  --el-button-bg-color: #0a80ff;
+  --el-button-border-color: #0a80ff;
   --el-button-hover-link-text-color: #a0cfff;
-  --el-button-hover-bg-color: #79bbff;
-  --el-button-hover-border-color: #79bbff;
+  --el-button-hover-bg-color: #409eff;
+  --el-button-hover-border-color: #409eff;
   --el-button-active-bg-color: #337ecc;
   --el-button-active-border-color: #337ecc;
   --el-button-disabled-bg-color: #a0cfff;
   --el-button-disabled-border-color: #a0cfff;
+}
+.el-checkbox {
+  --el-checkbox-text-color: #969696;
+  --el-checkbox-bg-color: #ffffff;
+  --el-checkbox-input-border: 1px solid #c0c4cc;
+  --el-checkbox-checked-text-color: #0a80ff;
+  --el-checkbox-checked-input-border-color: #0a80ff;
+  --el-checkbox-checked-bg-color: #0a80ff;
+  --el-checkbox-input-border-color-hover: #0a80ff;
 }
 </style>

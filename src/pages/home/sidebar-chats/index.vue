@@ -56,7 +56,10 @@
           <template #prefix><icon-ep-search /></template>
           <template #default="{ item }">
             <div class="search-item">
-              <el-avatar :src="item.friendAvatar" @error="() => true">
+              <el-avatar
+                :src="'http://49.235.73.114:9000/easychat' + item.friendAvatar"
+                @error="() => true"
+              >
                 <img
                   src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
                 />
@@ -100,7 +103,7 @@
           class="chats-empty"
           description="还没有聊天哦..."
         >
-          <template #image><icon-mdi-chat-remove /></template>
+          <template #image><icon-mdi-forum-remove-outline /></template>
         </el-empty>
         <div v-else class="chats-body">
           <el-scrollbar max-height="730px">
@@ -120,7 +123,9 @@
                   "
                 >
                   <el-avatar
-                    :src="chat.friendAvatar"
+                    :src="
+                      'http://49.235.73.114:9000/easychat' + chat.friendAvatar
+                    "
                     size="large"
                     @error="() => true"
                   >
@@ -138,35 +143,47 @@
                           : chat.friendNickName
                       }}
                     </span>
-                    <p v-if="chat.latestChatHistory.type === 0">
-                      {{ chat.latestChatHistory.content }}
+                    <p>
+                      {{
+                        chat.latestChatHistory.type === 0
+                          ? chat.latestChatHistory.content
+                          : chat.latestChatHistory.type === 1
+                          ? "[图片]"
+                          : chat.latestChatHistory.type === 2
+                          ? "[语音]"
+                          : chat.latestChatHistory.type === 3
+                          ? "[文件]"
+                          : ""
+                      }}
                     </p>
-                    <p v-else-if="chat.latestChatHistory.type === 1">
-                      <icon-mdi-camera style="font-size: 16px" /><span
-                        >[图片]</span
-                      >
-                    </p>
-                    <p v-else-if="chat.latestChatHistory.type === 2">
-                      <icon-mdi-microphone /><span>[语音]</span>
-                    </p>
-                    <p v-else-if="chat.latestChatHistory.type === 3">
-                      <icon-mdi-file /><span>[文档]</span>
-                    </p>
-                    <p v-else-if="chat.latestChatHistory.type === 4">
-                      <icon-mdi-video /><span>[视频]</span>
-                    </p>
-                    <p v-else></p>
                   </div>
                   <div>
-                    <small>
+                    <small v-if="chat.latestChatHistory.createTime === null">
                       {{
-                        compareDate(chat.createTime)
-                          ? formatDate(chat.createTime, "a h:mm")
-                          : compareDate(chat.createTime, 1)
+                        compareDate(chat.sessionTime)
+                          ? formatDate(chat.sessionTime, "a h:mm")
+                          : compareDate(chat.sessionTime, 1)
                           ? "昨天"
-                          : compareDate(chat.createTime, 2)
+                          : compareDate(chat.sessionTime, 2)
                           ? "前天"
-                          : formatDate(chat.createTime, "YYYY-MM-DD")
+                          : formatDate(chat.sessionTime, "YYYY-MM-DD")
+                      }}
+                    </small>
+                    <small v-else>
+                      {{
+                        compareDate(chat.latestChatHistory.createTime)
+                          ? formatDate(
+                              chat.latestChatHistory.createTime,
+                              "a h:mm"
+                            )
+                          : compareDate(chat.latestChatHistory.createTime, 1)
+                          ? "昨天"
+                          : compareDate(chat.latestChatHistory.createTime, 2)
+                          ? "前天"
+                          : formatDate(
+                              chat.latestChatHistory.createTime,
+                              "YYYY-MM-DD"
+                            )
                       }}
                     </small>
                     <div
@@ -176,7 +193,7 @@
                       "
                       class="list-item-badge"
                     >
-                      <el-badge style="--el-badge-size: 20px" :value="1" />
+                      <el-badge class="badge" value="..." />
                     </div>
                     <div v-else class="list-item-action" @click.stop="">
                       <el-dropdown trigger="click">
@@ -268,17 +285,22 @@ export default {
       //   latestChatHistory: {},
       // };
       // 发送请求修改该好友的sessionId和sessionTime(sessionId需要双方统一！)
-      socket.emit("addSession", friend.friendUserId, (response) => {
-        if (response) {
+      socket.emit(
+        "addSession",
+        user.userId,
+        friend.friendUserId,
+        (response) => {
           console.log(response);
-          chatList.value.splice(0, 0, response);
-          emit("update:showChat", response.sessionId);
-          store.dispatch("home/getFriendList");
-          // store.dispatch("home/getFriendList", user.userId);
-        } else {
-          ElMessage.error({ message: "网络异常", showClose: true });
+          if (response) {
+            chatList.value.splice(0, 0, response);
+            emit("update:showChat", response.sessionId);
+            // store.dispatch("home/getFriendList");
+            store.dispatch("home/getFriendList", user.userId);
+          } else {
+            ElMessage.error({ message: "网络异常", showClose: true });
+          }
         }
-      });
+      );
     };
 
     const searchValue = ref("");
@@ -314,19 +336,24 @@ export default {
         cancelButtonText: "取消",
         beforeClose: (action, instance, done) => {
           if (action === "confirm") {
-            socket.emit("removeSession", chat.friendUserId, (response) => {
-              if (response) {
+            socket.emit(
+              "removeSession",
+              user.userId,
+              chat.friendUserId,
+              (response) => {
                 console.log(response);
-                if (showChat.value === chat.sessionId) {
-                  emit("update:showChat", "");
+                if (response) {
+                  if (showChat.value === chat.sessionId) {
+                    emit("update:showChat", "");
+                  }
+                  chatList.value.splice(index, 1);
+                  // store.dispatch("home/getFriendList");
+                  store.dispatch("home/getFriendList", user.userId);
+                } else {
+                  ElMessage.error({ message: "网络异常", showClose: true });
                 }
-                chatList.value.splice(index, 1);
-                store.dispatch("home/getFriendList");
-                // store.dispatch("home/getFriendList", user.userId);
-              } else {
-                ElMessage.error({ message: "网络异常", showClose: true });
               }
-            });
+            );
             done();
           } else {
             done();
@@ -352,23 +379,28 @@ export default {
         if (chatIndex >= 0) {
           if (showChat.value === message.sessionId) {
             message.hasRead = 1;
-            socket.emit("readMessages", showChat.value);
+            socket.emit("readMessages", showChat.value, user.userId);
           }
           chatList.value[chatIndex].createTime = message.createTime;
           chatList.value[chatIndex].latestChatHistory = message;
           let delChat = chatList.value.splice(chatIndex, 1)[0];
           chatList.value.splice(0, 0, delChat);
         } else {
-          socket.emit("addSession", friend.friendUserId, (response) => {
-            if (response) {
-              response.createTime = message.createTime;
-              response.latestChatHistory = message;
+          socket.emit(
+            "addSession",
+            user.userId,
+            friend.friendUserId,
+            (response) => {
               console.log(response);
-              chatList.value.splice(0, 0, response);
-            } else {
-              ElMessage.error({ message: "网络异常", showClose: true });
+              if (response) {
+                response.createTime = message.createTime;
+                response.latestChatHistory = message;
+                chatList.value.splice(0, 0, response);
+              } else {
+                ElMessage.error({ message: "网络异常", showClose: true });
+              }
             }
-          });
+          );
         }
       });
     });
@@ -382,13 +414,15 @@ export default {
         let latestChatHistory = chatList.value[chatIndex].latestChatHistory;
         if (latestChatHistory && latestChatHistory.senderId !== user.userId) {
           chatList.value[chatIndex].latestChatHistory.hasRead = 1;
-          socket.emit("readMessages", showChat.value);
+          socket.emit("readMessages", showChat.value, user.userId);
         }
-        store.dispatch("home/getHistory");
-        // store.dispatch("home/getHistory", {
-        //   userId: user.userId,
-        //   sessionId: showChat.value,
-        // });
+        // store.dispatch("home/getHistory");
+        store.dispatch("home/getHistory", {
+          id: user.userId,
+          session: showChat.value,
+          page: 1,
+          size: 15,
+        });
       } else {
         currentSession.value = "";
       }
@@ -469,7 +503,7 @@ export default {
 .chats-empty {
   height: 730px;
   justify-content: flex-start;
-  padding-top: 100px;
+  padding-top: 150px;
 }
 .chats-body {
   height: 730px;
@@ -546,7 +580,7 @@ export default {
   flex: 1;
 }
 .list-item-content span:first-child {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 600;
   color: var(--text-color-regular);
   margin-top: 2px;
@@ -556,18 +590,14 @@ export default {
   text-overflow: ellipsis;
 }
 .list-item-content p {
-  display: flex;
-  align-items: center;
-  white-space: nowrap;
-  text-overflow: ellipsis;
-  overflow: hidden;
-  margin-top: 0;
-  margin-bottom: 0;
-  padding-left: 1px;
+  font-size: 15px;
   color: var(--text-color-secondary);
-}
-.list-item-content p span {
-  margin-left: 5px;
+  padding-left: 1px;
+  margin: 0;
+  margin-top: 2px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 .list-item-body small {
   font-size: 14px;
@@ -576,7 +606,13 @@ export default {
 .list-item-badge {
   margin-top: 10px;
   text-align: right;
-  padding-right: 2px;
+}
+.list-item-badge .badge {
+  --el-badge-font-size: 20px;
+}
+.list-item-badge .badge >>> .el-badge__content {
+  height: 20px;
+  padding-bottom: 10px;
 }
 .list-item-action {
   opacity: 0;

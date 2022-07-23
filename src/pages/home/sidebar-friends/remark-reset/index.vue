@@ -5,7 +5,7 @@
     width="30%"
     destroy-on-close
     @open="open"
-    @closed="close(formRef)"
+    @closed="close"
   >
     <div class="remark-reset">
       <el-form
@@ -64,6 +64,7 @@
 import {
   computed,
   getCurrentInstance,
+  inject,
   reactive,
   ref,
   toRefs,
@@ -81,6 +82,7 @@ export default {
   setup(props, { emit }) {
     const socket =
       getCurrentInstance().appContext.config.globalProperties.socket;
+    const user = inject("user");
     const store = useStore();
 
     const { show } = toRefs(props);
@@ -96,9 +98,9 @@ export default {
         oldRemark.value = result.friendRemark;
       }
     };
-    const close = (formEl) => {
+    const close = () => {
       emit("update:show", "");
-      formEl.resetFields();
+      formRef.value.resetFields();
       oldRemark.value = "";
       friend.userId = "";
       friend.nickName = "";
@@ -132,6 +134,7 @@ export default {
           loading.value = true;
           socket.emit(
             "resetRemark",
+            user.userId,
             friend.userId,
             friend.remark,
             (response) => {
@@ -139,11 +142,11 @@ export default {
               if (response) {
                 emit("resetRemark", response);
                 ElMessage.success({ message: "保存成功", showClose: true });
-                loading.value = false;
                 isShow.value = false;
               } else {
                 ElMessage.error({ message: "网络异常", showClose: true });
               }
+              loading.value = false;
             }
           );
         } else {

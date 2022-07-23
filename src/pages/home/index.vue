@@ -19,6 +19,13 @@
             @showProfile="showProfile = $event"
           />
         </el-collapse-transition>
+        <div class="developing" v-show="menu === 2 || menu === 4 || menu === 5">
+          <el-empty description="模块正在建设中，敬请期待...">
+            <template #image>
+              <icon-mdi-cogs />
+            </template>
+          </el-empty>
+        </div>
       </div>
       <transition name="el-zoom-in-center">
         <Chat v-show="showChat" v-model:showChat="showChat" />
@@ -76,18 +83,18 @@ export default {
 
     onMounted(async () => {
       user.userId = getCookie("uid");
-      let result = await mockGetUserInfo();
-      // let result = await reqGetUserInfo(user.userId);
-      if (result.code === 200) {
-        user.avatar = result.data.avatar;
+      // let result = await mockGetUserInfo();
+      let result = await reqGetUserInfo({ id: user.userId });
+      if (result.success) {
+        user.avatar = "http://49.235.73.114:9000/easychat" + result.data.avatar;
         user.nickName = result.data.nickName;
       }
-      store.dispatch("home/getChatList");
-      store.dispatch("home/getFriendList");
-      store.dispatch("home/getFriendVerify");
-      // store.dispatch("home/getChatList", user.userId);
-      // store.dispatch("home/getFriendList", user.userId);
-      // store.dispatch("home/getFriendVerify", user.userId);
+      // store.dispatch("home/getChatList");
+      // store.dispatch("home/getFriendList");
+      // store.dispatch("home/getFriendVerify");
+      store.dispatch("home/getChatList", user.userId);
+      store.dispatch("home/getFriendList", user.userId);
+      store.dispatch("home/getFriendVerify", user.userId);
       socket.emit("online", user.userId);
       socket.on("onlineUsers", (onlineUsers) => {
         console.log("在线的用户：" + onlineUsers);
@@ -131,5 +138,14 @@ export default {
 .sidebar {
   max-width: 400px;
   border-right: 1px solid var(--border-color);
+}
+.developing {
+  display: flex;
+  height: 100%;
+  width: 400px;
+  flex-flow: column nowrap;
+  background-color: var(--bg-color-page);
+  padding-top: 250px;
+  flex: 1;
 }
 </style>

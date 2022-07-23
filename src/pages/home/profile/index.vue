@@ -20,7 +20,11 @@
     </template>
     <div class="profile">
       <figure>
-        <el-avatar :src="userInfo.avatar" :size="80" @error="() => true">
+        <el-avatar
+          :src="'http://49.235.73.114:9000/easychat' + userInfo.avatar"
+          :size="80"
+          @error="() => true"
+        >
           <img
             src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
           />
@@ -54,9 +58,9 @@
           <span>性别</span>
           <p>
             {{
-              userInfo.gender === "0"
+              userInfo.gender === 0
                 ? "女"
-                : userInfo.gender === "1"
+                : userInfo.gender === 1
                 ? "男"
                 : "保密"
             }}
@@ -65,7 +69,7 @@
         <el-divider border-style="dotted" />
         <div class="profile-item">
           <span>年龄</span>
-          <p>{{ userInfo.age ? userInfo.age : "保密" }}</p>
+          <p>{{ userInfo.age > 0 ? userInfo.age : "保密" }}</p>
         </div>
         <el-divider border-style="dotted" />
         <div class="profile-item">
@@ -101,7 +105,7 @@
 <script>
 import { computed, inject, ref, toRefs, watch } from "vue";
 import { useStore } from "vuex";
-import { mockGetUserInfo } from "@/api";
+import { mockGetUserInfo, reqGetUserInfo } from "@/api";
 import { formatDate } from "@/utils/date";
 
 export default {
@@ -117,9 +121,9 @@ export default {
     const { show } = toRefs(props);
     const isShow = ref(false);
     const open = async () => {
-      let result = await mockGetUserInfo();
-      // let result = await reqGetUserInfo(show.value);
-      if (result.code === 200) {
+      // let result = await mockGetUserInfo();
+      let result = await reqGetUserInfo({ id: show.value });
+      if (result.success) {
         userInfo.value = result.data;
         if (show.value === user.userId) {
           remark.value = result.data.nickName;

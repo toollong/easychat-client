@@ -7,7 +7,7 @@ import router from '@/router'
 import store from '@/store'
 import App from '@/App.vue'
 
-import "@/mock/mockServer"
+// import "@/mock/mockServer"
 import "@/moment/moment"
 
 import "@/assets/css/index.css"

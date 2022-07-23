@@ -32,9 +32,10 @@
                 <figure>
                   <el-avatar
                     :src="
-                      row.senderId === user.userId
+                      'http://49.235.73.114:9000/easychat' +
+                      (row.senderId === user.userId
                         ? row.receiverAvatar
-                        : row.senderAvatar
+                        : row.senderAvatar)
                     "
                     :size="50"
                     shape="square"
@@ -100,7 +101,7 @@
           </el-table-column>
         </el-table>
       </div>
-      <div v-if="showAgreeForm" class="agree-form">
+      <div v-show="showAgreeForm" class="agree-form">
         <el-form
           ref="formRef"
           :model="friend"
@@ -111,7 +112,7 @@
           <div class="userinfo">
             <figure>
               <el-avatar
-                :src="friend.avatar"
+                :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
                 :size="60"
                 shape="square"
                 @error="() => true"
@@ -186,7 +187,7 @@ export default {
     const close = () => {
       emit("update:show", false);
       showAgreeForm.value = false;
-      friend.remark = "";
+      formRef.value.resetFields();
     };
 
     const friendVerifyList = computed(() => store.state.home.friendVerifyList);
@@ -200,7 +201,11 @@ export default {
     const rejectApply = (friendVerify, index) => {
       ElMessage.warning({ message: "已拒绝", showClose: true });
       friendVerifyList.value[index].status = 2;
-      socket.emit("rejectApply", friendVerify);
+      socket.emit(
+        "rejectApply",
+        friendVerify.senderId,
+        friendVerify.receiverId
+      );
     };
 
     const showAgreeForm = ref(false);
@@ -240,8 +245,8 @@ export default {
                 friendVerifyList.value[index].status = 1;
                 isShow.value = false;
               }
-              store.dispatch("home/getFriendList");
-              // store.dispatch("home/getFriendList", user.userId);
+              // store.dispatch("home/getFriendList");
+              store.dispatch("home/getFriendList", user.userId);
               emit("addChat", response);
             } else {
               ElMessage.error({ message: "网络异常", showClose: true });

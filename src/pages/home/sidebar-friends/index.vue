@@ -15,10 +15,12 @@
                 :hide-after="100"
                 :enterable="false"
               >
-                <el-button type="primary" link @click="showFriendVerify = true">
-                  <icon-mdi-account-sync
-                    style="font-size: 31px; margin-top: 2px"
-                  />
+                <el-button type="primary" link @click="openFriendVerify">
+                  <el-badge class="badge" is-dot :hidden="hideBadge">
+                    <icon-mdi-account-sync
+                      style="font-size: 31px; margin-top: 2px"
+                    />
+                  </el-badge>
                 </el-button>
               </el-tooltip>
               <el-tooltip
@@ -97,7 +99,9 @@
                   "
                 >
                   <el-avatar
-                    :src="friend.friendAvatar"
+                    :src="
+                      'http://49.235.73.114:9000/easychat' + friend.friendAvatar
+                    "
                     :size="45"
                     @error="() => true"
                   >
@@ -109,7 +113,12 @@
               </template>
               <template #default>
                 <div class="avatar-card">
-                  <el-avatar :src="friend.friendAvatar" @error="() => true">
+                  <el-avatar
+                    :src="
+                      'http://49.235.73.114:9000/easychat' + friend.friendAvatar
+                    "
+                    @error="() => true"
+                  >
                     <img
                       src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
                     />
@@ -118,7 +127,10 @@
                     <p class="avatar-card-name">
                       {{ friend.friendNickName }}
                     </p>
-                    <p class="avatar-card-tag">
+                    <p
+                      class="avatar-card-tag"
+                      v-if="friend.friendTags !== null"
+                    >
                       {{ friend.friendTags.join(" ") }}
                     </p>
                   </div>
@@ -219,6 +231,7 @@ export default {
     const friendVerifyList = computed(() => store.state.home.friendVerifyList);
     const chatList = computed(() => store.state.home.chatList);
     const onlineUsers = computed(() => store.state.home.onlineUsers);
+    const hideBadge = ref(true);
     const searchValue = ref("");
     const searchFriendList = computed(() =>
       friendList.value.filter((friend) => {
@@ -232,8 +245,19 @@ export default {
     const showFriendAdd = ref(false);
     const showFriendVerify = ref(false);
     const showRemarkReset = ref("");
+    const checkIsRead = () => {
+      let index = friendVerifyList.value.findIndex(
+        (verify) => verify.receiverId === user.userId && verify.hasRead === 0
+      );
+      return index < 0;
+    };
     const checkOnline = (userId) => {
       return onlineUsers.value.indexOf(userId) >= 0;
+    };
+    const openFriendVerify = () => {
+      showFriendVerify.value = true;
+      hideBadge.value = true;
+      socket.emit("readVerify", user.userId);
     };
     const addNewChat = (response) => {
       emit("hideSidebar", 1);
@@ -246,33 +270,36 @@ export default {
         (chat) => chat.friendUserId === friend.friendUserId
       );
       if (!chatSession) {
-        // let response = {
-        //   sessionId: "10000000011",
-        //   userId: user.userId,
-        //   friendUserId: "20000000005",
-        //   friendNickName: "11111",
-        //   friendRemark: "22222",
-        //   friendAvatar: "/images/avatar3.jpg",
-        //   createTime: "2022-06-16 16:14:56",
-        //   latestChatHistory: {},
-        // };
-        socket.emit("addSession", friend.friendUserId, (response) => {
-          if (response) {
+        socket.emit(
+          "addSession",
+          user.userId,
+          friend.friendUserId,
+          (response) => {
             console.log(response);
-            chatList.value.splice(0, 0, response);
-            chatSession = response;
-          } else {
-            ElMessage.error({ message: "网络异常", showClose: true });
+            if (response) {
+              chatList.value.splice(0, 0, response);
+              chatSession = response;
+            } else {
+              ElMessage.error({ message: "网络异常", showClose: true });
+            }
+            emit("update:showChat", chatSession.sessionId);
           }
-        });
+        );
+      } else {
+        emit("update:showChat", chatSession.sessionId);
       }
-      emit("update:showChat", chatSession.sessionId);
     };
     const updateRemark = (friend) => {
       let friendIndex = friendList.value.findIndex(
         (item) => item.friendUserId === friend.friendUserId
       );
       friendList.value[friendIndex].friendRemark = friend.friendRemark;
+      let chatIndex = chatList.value.findIndex(
+        (item) => item.friendUserId === friend.friendUserId
+      );
+      if (chatIndex >= 0) {
+        chatList.value[chatIndex].friendRemark = friend.friendRemark;
+      }
     };
     const removeFriend = (friend) => {
       ElMessageBox.confirm("您确定删除该好友吗？", "", {
@@ -312,16 +339,22 @@ export default {
     };
 
     onMounted(() => {
+      let index = friendVerifyList.value.findIndex(
+        (verify) => verify.receiverId === user.userId && verify.hasRead === 0
+      );
+      hideBadge.value = index < 0;
+
       socket.on("receiveVerify", (friendVerify, callback) => {
         console.log("收到好友申请：" + JSON.stringify(friendVerify));
         callback();
         friendVerifyList.value.splice(0, 0, friendVerify);
+        hideBadge.value = true;
       });
 
       socket.on("applySucceed", (chatSession) => {
         console.log(chatSession.friendNickName + "已同意好友请求");
-        store.dispatch("home/getFriendList");
-        // store.dispatch("home/getFriendList", user.userId);
+        // store.dispatch("home/getFriendList");
+        store.dispatch("home/getFriendList", user.userId);
         let index = friendVerifyList.value.findIndex(
           (verify) =>
             verify.senderId === user.userId &&
@@ -329,30 +362,34 @@ export default {
         );
         if (index >= 0) {
           friendVerifyList.value[index].status = 1;
+          hideBadge.value = true;
         }
         chatList.value.splice(0, 0, chatSession);
       });
 
-      socket.on("applyFailed", (friendVerify) => {
-        console.log(friendVerify.receiverNickName + "已拒绝好友请求");
+      socket.on("applyFailed", (senderId, receiverId) => {
+        console.log(receiverId + "已拒绝好友请求");
         let index = friendVerifyList.value.findIndex(
           (verify) =>
-            verify.senderId === friendVerify.senderId &&
-            verify.receiverId === friendVerify.receiverId
+            verify.senderId === senderId && verify.receiverId === receiverId
         );
         if (index >= 0) {
           friendVerifyList.value[index].status = 2;
+          hideBadge.value = true;
         }
       });
     });
 
     return {
+      hideBadge,
       searchValue,
       searchFriendList,
       showFriendAdd,
       showFriendVerify,
       showRemarkReset,
+      checkIsRead,
       checkOnline,
+      openFriendVerify,
       addNewChat,
       toChat,
       updateRemark,
@@ -399,13 +436,21 @@ export default {
 .friends header ul li {
   display: inline-block;
 }
+.friends header .badge {
+  height: 24px;
+}
+.friends header .badge >>> .el-badge__content.is-dot {
+  height: 10px;
+  width: 10px;
+  right: 8px;
+}
 .friends form {
   padding: 24px 30px;
 }
 .friends-empty {
   height: 730px;
   justify-content: flex-start;
-  padding-top: 100px;
+  padding-top: 150px;
 }
 .friends-body {
   height: 730px;

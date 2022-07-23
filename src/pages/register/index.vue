@@ -117,7 +117,13 @@
 import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { reqRegister } from "@/api";
+import {
+  reqRegister,
+  reqSendCode,
+  reqValidateCode,
+  reqValidateUsername,
+} from "@/api";
+import { getCookie } from "@/utils/cookie";
 
 export default {
   name: "Register",
@@ -134,9 +140,9 @@ export default {
       verifyCode: "",
       isAgree: false,
     });
-    const validateUsername = (rule, value, callback) => {
-      // 查找数据库中该用户名是否存在
-      if (value === "n12345") {
+    const validateUsername = async (rule, value, callback) => {
+      let result = await reqValidateUsername({ username: value });
+      if (result.success) {
         callback(new Error("该用户名已被占用或不可注册！"));
       } else {
         callback();
@@ -164,15 +170,18 @@ export default {
         callback();
       }
     };
-    const validateVerifyCode = (rule, value, callback) => {
+    const validateVerifyCode = async (rule, value, callback) => {
       if (value === "") {
         callback(new Error("请填写验证码！"));
       } else {
-        // 发送请求验证邮箱和验证码是否匹配
-        if (value !== "123456") {
-          callback(new Error("验证码错误，请重新填写！"));
-        } else {
+        let result = await reqValidateCode({
+          email: registerForm.email,
+          verifyCode: value,
+        });
+        if (result.success) {
           callback();
+        } else {
+          callback(new Error("验证码错误，请重新填写！"));
         }
       }
     };
@@ -236,18 +245,14 @@ export default {
                 formEl.validateField("verifyCode", async (valid) => {
                   if (valid) {
                     loading.value = true;
-                    setTimeout(() => {
+                    let result = await reqRegister(registerForm);
+                    if (result.success) {
                       ElMessage.success("注册成功！");
                       router.push({ name: "login" });
-                    }, 1000);
-                    // let result = await reqRegister(registerForm);
-                    // if (result.code === 200) {
-                    //   ElMessage.success("注册成功！");
-                    //   router.push({ name: "login" });
-                    // } else {
-                    //   ElMessage.error("注册失败，请重试！");
-                    //   loading.value = false;
-                    // }
+                    } else {
+                      ElMessage.error("网络异常，请重试！");
+                      loading.value = false;
+                    }
                   } else {
                     return false;
                   }
@@ -272,23 +277,24 @@ export default {
     const count = ref(-1);
     const timer = ref();
     const getVerifyCode = () => {
-      // 发送验证码
-      if (1 === 1) {
-        if (!timer.value) {
-          count.value = 60;
-          showCount.value = true;
-          timer.value = setInterval(() => {
-            if (count.value > 0 && count.value <= 60) {
-              count.value--;
-            } else {
-              showCount.value = false;
-              clearInterval(timer.value);
-              timer.value = null;
-            }
-          }, 1000);
-        }
-      } else {
-        ElMessage.error("验证码发送失败，请重试！");
+      let value = getCookie("verify");
+      if (value) {
+        ElMessage.error("验证码发送频繁，请稍后重试！");
+        return;
+      }
+      reqSendCode({ email: registerForm.email, type: 0 });
+      if (!timer.value) {
+        count.value = 60;
+        showCount.value = true;
+        timer.value = setInterval(() => {
+          if (count.value > 0 && count.value <= 60) {
+            count.value--;
+          } else {
+            showCount.value = false;
+            clearInterval(timer.value);
+            timer.value = null;
+          }
+        }, 1000);
       }
     };
 
@@ -387,7 +393,7 @@ export default {
   margin-left: 22px;
 }
 .register-body .form .to-login a {
-  color: #409eff;
+  color: #0a80ff;
   text-decoration: none;
 }
 .register-body .form .to-login a:hover {
@@ -397,31 +403,40 @@ export default {
   --el-input-text-color: #606266;
   --el-input-border: 1px solid #dcdfe6;
   --el-input-hover-border: #c0c4cc;
-  --el-input-focus-border: #409eff;
+  --el-input-focus-border: #0a80ff;
   --el-input-transparent-border: 0 0 0 1px transparent inset;
   --el-input-border-color: #dcdfe6;
   --el-input-border-radius: 4px;
   --el-input-bg-color: #ffffff;
   --el-input-icon-color: #a8abb2;
-  --el-input-placeholder-color: #a8abb2;
+  --el-input-placeholder-color: #909399;
   --el-input-hover-border-color: #c0c4cc;
   --el-input-clear-hover-color: #909399;
-  --el-input-focus-border-color: #409eff;
+  --el-input-focus-border-color: #0a80ff;
 }
 .el-button--primary {
+  --el-button-bg-color: #0a80ff;
+  --el-button-border-color: #0a80ff;
   --el-button-hover-link-text-color: #a0cfff;
-  --el-button-hover-bg-color: #79bbff;
-  --el-button-hover-border-color: #79bbff;
+  --el-button-hover-bg-color: #409eff;
+  --el-button-hover-border-color: #409eff;
   --el-button-active-bg-color: #337ecc;
   --el-button-active-border-color: #337ecc;
   --el-button-disabled-bg-color: #a0cfff;
   --el-button-disabled-border-color: #a0cfff;
+}
+.el-button--primary.is-link {
+  --el-button-text-color: #0a80ff;
 }
 .el-button--primary.is-link.is-disabled {
   color: #a0cfff;
 }
 .el-checkbox {
   --el-checkbox-bg-color: #ffffff;
-  --el-checkbox-input-border: 1px solid #dcdfe6;
+  --el-checkbox-input-border: 1px solid #c0c4cc;
+  --el-checkbox-checked-text-color: #0a80ff;
+  --el-checkbox-checked-input-border-color: #0a80ff;
+  --el-checkbox-checked-bg-color: #0a80ff;
+  --el-checkbox-input-border-color-hover: #0a80ff;
 }
 </style>

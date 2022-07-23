@@ -8,7 +8,7 @@
       @closed="close"
     >
       <div class="chat-add">
-        <el-alert title="选择一个好友开始聊天" type="info" center />
+        <el-alert title="选择一个好友开始聊天" type="success" center />
         <div class="select">
           <span>好友</span>
           <el-select
@@ -27,7 +27,7 @@
                   : friend.friendNickName
               "
               :value="index"
-              :disabled="friend.sessionId !== '-1'"
+              :disabled="friend.sessionId !== '0'"
             />
           </el-select>
         </div>

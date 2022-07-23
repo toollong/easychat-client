@@ -7,21 +7,21 @@
         </a>
       </li>
       <li>
-        <el-badge :value="newMsgCount" :hidden="newMsgCount === 0">
-          <el-tooltip
-            effect="light"
-            content="聊天"
-            placement="right"
-            :offset="2"
-            :show-arrow="false"
-            :hide-after="100"
-            :enterable="false"
-          >
-            <a :class="{ active: activeIndex === 1 }" @click="activeIndex = 1">
+        <el-tooltip
+          effect="light"
+          content="聊天"
+          placement="right"
+          :offset="2"
+          :show-arrow="false"
+          :hide-after="100"
+          :enterable="false"
+        >
+          <a :class="{ active: activeIndex === 1 }" @click="activeIndex = 1">
+            <el-badge class="badge" is-dot :hidden="newMsgCount < 1">
               <icon-ep-chat-round />
-            </a>
-          </el-tooltip>
-        </el-badge>
+            </el-badge>
+          </a>
+        </el-tooltip>
       </li>
       <li>
         <el-tooltip
@@ -49,7 +49,9 @@
           :enterable="false"
         >
           <a :class="{ active: activeIndex === 3 }" @click="activeIndex = 3">
-            <icon-ep-user />
+            <el-badge class="badge" is-dot :hidden="true">
+              <icon-ep-user />
+            </el-badge>
           </a>
         </el-tooltip>
       </li>
@@ -238,11 +240,11 @@ export default {
             instance.confirmButtonLoading = true;
             instance.confirmButtonText = "正在退出...";
             instance.confirmButtonDisabled = true;
-            // let result = await reqLogout();
-            // if (result.code !== 200) {
-            setCookie("uid", "", 0);
-            // }
-            //   socket.emit("offline", user.userId);
+            let result = await reqLogout();
+            if (!result.success) {
+              setCookie("uid", "", 0);
+            }
+            socket.emit("offline", user.userId);
             done();
           } else {
             done();
@@ -316,6 +318,14 @@ export default {
 }
 .menu li:not(.logo) a {
   border-radius: 7px;
+}
+.menu li .badge {
+  height: 24px;
+}
+.menu li .badge >>> .el-badge__content.is-dot {
+  height: 10px;
+  width: 10px;
+  right: 0;
 }
 .logo {
   display: flex;

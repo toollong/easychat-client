@@ -44,9 +44,9 @@
         <el-form-item class="form-item" prop="gender">
           <span class="label">性别</span>
           <el-radio-group v-model="profile.gender" size="default">
-            <el-radio-button label="1">男</el-radio-button>
-            <el-radio-button label="0">女</el-radio-button>
-            <el-radio-button label="2">保密</el-radio-button>
+            <el-radio-button :label="1">男</el-radio-button>
+            <el-radio-button :label="0">女</el-radio-button>
+            <el-radio-button :label="2">保密</el-radio-button>
           </el-radio-group>
         </el-form-item>
         <el-form-item class="form-item" prop="birthday">
@@ -144,9 +144,9 @@ export default {
     const { show } = toRefs(props);
     const isShow = ref(false);
     const open = async () => {
-      let result = await mockGetUserInfo();
-      // let result = await reqGetUserInfo(user.userId);
-      if (result.code === 200) {
+      // let result = await mockGetUserInfo();
+      let result = await reqGetUserInfo({ id: user.userId });
+      if (result.success) {
         profile.nickName = result.data.nickName;
         profile.gender = result.data.gender;
         profile.birthday = result.data.birthday;
@@ -220,8 +220,9 @@ export default {
                 : "",
             introduction: profile.introduction,
           });
-          if (result.code === 200) {
+          if (result.success) {
             ElMessage.success({ message: "保存成功", showClose: true });
+            isShow.value = false;
           } else {
             ElMessage.error({
               message: "网络异常，请重试！",
