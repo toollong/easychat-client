@@ -15,7 +15,7 @@ import "element-plus/theme-chalk/el-message.css"
 import "element-plus/theme-chalk/el-message-box.css"
 import "element-plus/theme-chalk/el-loading.css"
 import "element-plus/theme-chalk/base.css"
-import "vue3-slide-verify/dist/style.css";
+import "vue3-slide-verify/dist/style.css"
 
 const app = createApp(App)
 
