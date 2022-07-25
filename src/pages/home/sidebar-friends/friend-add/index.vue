@@ -40,7 +40,11 @@
                 <div class="header">
                   <figure>
                     <el-avatar
-                      :src="'http://49.235.73.114:9000/easychat' + user.avatar"
+                      :src="
+                        user.avatar
+                          ? 'http://49.235.73.114:9000/easychat' + user.avatar
+                          : ''
+                      "
                       size="large"
                       shape="square"
                       @error="() => true"
@@ -106,7 +110,11 @@
           <div class="userinfo">
             <figure>
               <el-avatar
-                :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
+                :src="
+                  friend.avatar
+                    ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                    : ''
+                "
                 :size="60"
                 shape="square"
                 @error="() => true"

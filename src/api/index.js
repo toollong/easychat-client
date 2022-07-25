@@ -26,7 +26,7 @@ export const reqGetUserInfo = (params) => axios.get('/user/user', { params: para
 
 export const reqEditUserInfo = (data) => axios.post('/user/user/edit', data);
 
-export const reqChangeAvatar = (data) => axios.post('/user/user/changeAvatar', data);
+export const reqChangeAvatar = (data) => axios.post('/user/user/changeAvatar', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 
 export const reqChangePassword = (data) => axios.post('/user/user/changePassword', data);
 
@@ -37,5 +37,7 @@ export const reqGetFriendList = (params) => axios.get('/user/friends', { params:
 export const reqGetFriendVerify = (params) => axios.get('/user/friendVerify', { params: params });
 
 export const reqGetHistory = (params) => axios.get('/chat/chats/chatHistory', { params: params });
+
+export const reqSavePictureMsg = (data) => axios.post('/chat/chats/savePictureMsg', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 
 export const reqLogout = () => axios.post('/auth/logout');

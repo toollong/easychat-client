@@ -57,7 +57,11 @@
           <template #default="{ item }">
             <div class="search-item">
               <el-avatar
-                :src="'http://49.235.73.114:9000/easychat' + item.friendAvatar"
+                :src="
+                  item.friendAvatar
+                    ? 'http://49.235.73.114:9000/easychat' + item.friendAvatar
+                    : ''
+                "
                 @error="() => true"
               >
                 <img
@@ -124,7 +128,10 @@
                 >
                   <el-avatar
                     :src="
-                      'http://49.235.73.114:9000/easychat' + chat.friendAvatar
+                      chat.friendAvatar
+                        ? 'http://49.235.73.114:9000/easychat' +
+                          chat.friendAvatar
+                        : ''
                     "
                     size="large"
                     @error="() => true"
@@ -368,7 +375,7 @@ export default {
       loading.value = true;
       setTimeout(() => {
         loading.value = false;
-      }, 500);
+      }, 1000);
 
       socket.on("receiveMsg", (message, callback) => {
         console.log("收到消息：" + JSON.stringify(message));
@@ -389,13 +396,15 @@ export default {
           socket.emit(
             "addSession",
             user.userId,
-            friend.friendUserId,
+            message.senderId,
             (response) => {
               console.log(response);
               if (response) {
-                response.createTime = message.createTime;
-                response.latestChatHistory = message;
-                chatList.value.splice(0, 0, response);
+                if (response !== "exist") {
+                  response.createTime = message.createTime;
+                  response.latestChatHistory = message;
+                  chatList.value.splice(0, 0, response);
+                }
               } else {
                 ElMessage.error({ message: "网络异常", showClose: true });
               }

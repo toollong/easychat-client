@@ -32,10 +32,12 @@
                 <figure>
                   <el-avatar
                     :src="
-                      'http://49.235.73.114:9000/easychat' +
-                      (row.senderId === user.userId
-                        ? row.receiverAvatar
-                        : row.senderAvatar)
+                      row.senderId
+                        ? 'http://49.235.73.114:9000/easychat' +
+                          (row.senderId === user.userId
+                            ? row.receiverAvatar
+                            : row.senderAvatar)
+                        : ''
                     "
                     :size="50"
                     shape="square"
@@ -112,7 +114,11 @@
           <div class="userinfo">
             <figure>
               <el-avatar
-                :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
+                :src="
+                  friend.avatar
+                    ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                    : ''
+                "
                 :size="60"
                 shape="square"
                 @error="() => true"

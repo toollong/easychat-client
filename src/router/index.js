@@ -23,6 +23,11 @@ const routes = [
         name: 'findPassword'
     },
     {
+        path: '/about',
+        component: () => import('@/pages/about'),
+        name: 'about'
+    },
+    {
         path: '/',
         redirect: "/home"
     }
@@ -34,7 +39,7 @@ const router = createRouter({
 })
 
 router.beforeEach((to, from, next) => {
-    if (to.path === "/login" || to.path === "/register" || to.path === "/findPassword") {
+    if (to.path === "/login" || to.path === "/register" || to.path === "/findPassword" || to.path === "/about") {
         return next();
     }
     const uid = getCookie("uid");

@@ -113,7 +113,6 @@ import { reactive, ref } from "vue";
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
 import { reqLogin } from "@/api";
-import { setCookie } from "@/utils/cookie";
 import SlideVerify from "vue3-slide-verify";
 
 export default {

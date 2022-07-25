@@ -23,27 +23,45 @@
       <div class="avatar">
         <span class="label">头像</span>
         <el-upload
-          ref="uploadRef"
           class="avatar-uploader"
-          action="/api/user/user/changeAvatar"
-          :data="{ id: user.userId }"
+          action="#"
+          :file-list="fileList"
           :show-file-list="false"
           :auto-upload="false"
           :on-change="checkImage"
-          :on-success="uploadSucceed"
-          :on-error="uploadFailed"
         >
-          <el-image class="image" :src="avatarUrl" />
+          <el-image
+            class="image"
+            :src="avatarUrl"
+            fit="cover"
+            @error="() => true"
+          >
+            <template #placeholder>
+              <img
+                style="height: 100px"
+                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+              />
+            </template>
+            <template #error>
+              <img
+                style="height: 100px"
+                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+              />
+            </template>
+          </el-image>
         </el-upload>
+        <el-button class="avatar-button" plain @click="showAvatar = true">
+          预览
+        </el-button>
         <el-button
-          class="avatar-submit"
+          class="avatar-button"
           v-if="avatarUrl !== user.avatar"
           :loading="avatarLoading"
           :disabled="avatarLoading"
           plain
           @click="saveAvatar"
         >
-          {{ avatarLoading ? "保存中..." : "保存" }}
+          保存
         </el-button>
       </div>
       <div class="status">
@@ -94,12 +112,42 @@
       </div>
     </div>
     <PasswordReset v-model:show="showPasswordReset" />
+    <el-dialog v-model="showAvatar" width="30%" destroy-on-close>
+      <div class="preview">
+        <el-image :src="avatarUrl" fit="contain" />
+      </div>
+    </el-dialog>
+    <el-dialog
+      v-model="showQRCode"
+      width="30%"
+      destroy-on-close
+      @open="randomNum = Math.floor(Math.random() * 6) + 1"
+    >
+      <div class="contact">
+        <p class="tip">扫一扫下面的二维码图案，加我微信</p>
+        <el-image :src="'/images/wechat/wechat' + randomNum + '.png'" />
+      </div>
+    </el-dialog>
+    <template #footer>
+      <div class="drawer-footer">
+        <router-link to="/about" target="_blank">
+          <el-button class="button" type="info" link>关于我们</el-button>
+        </router-link>
+        <el-button class="button" type="info" link @click="showQRCode = true">
+          联系我们
+        </el-button>
+        <router-link to="/about" target="_blank">
+          <el-button class="button" type="info" link>反馈建议</el-button>
+        </router-link>
+      </div>
+    </template>
   </el-drawer>
 </template>
 
 <script>
 import { inject, nextTick, ref, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
+import { reqChangeAvatar } from "@/api";
 import PasswordReset from "@/pages/home/menu/settings/password-reset";
 
 export default {
@@ -120,40 +168,44 @@ export default {
     const open = () => {
       avatarUrl.value = user.avatar;
       online.value = true;
-      tags.value = ["程序员", "时间管理大师"];
+      tags.value = ["时间管理大师"];
     };
     const close = () => {
       emit("update:show", false);
     };
 
-    const uploadRef = ref();
+    const fileList = ref([]);
     const avatarUrl = ref("");
     const avatarLoading = ref(false);
-    const checkImage = (uploadFile) => {
-      if (
-        uploadFile.raw.type !== "image/jpeg" &&
-        uploadFile.raw.type !== "image/png"
-      ) {
+    const checkImage = (file, files) => {
+      if (file.raw.type !== "image/jpeg" && file.raw.type !== "image/png") {
         ElMessage.error("上传的图片仅支持 JPG 或 PNG 格式！");
         return;
       }
-      if (uploadFile.size / 1024 / 1024 > 2) {
+      if (file.size / 1024 / 1024 > 2) {
         ElMessage.error("上传的图片大小不能超过 2M ！");
         return;
       }
-      avatarUrl.value = URL.createObjectURL(uploadFile.raw);
+      avatarUrl.value = URL.createObjectURL(file.raw);
+      fileList.value = files;
     };
-    const uploadSucceed = () => {
-      ElMessage.success({ message: "保存成功", showClose: true });
-      reload();
-    };
-    const uploadFailed = () => {
-      ElMessage.error({ message: "网络异常", showClose: true });
-      avatarLoading.value = false;
-    };
-    const saveAvatar = () => {
-      avatarLoading.value = true;
-      uploadRef.value.submit();
+    const saveAvatar = async () => {
+      if (fileList.value.length > 0) {
+        avatarLoading.value = true;
+        let formData = new FormData();
+        fileList.value.forEach((file) => {
+          formData.append("file", file.raw);
+        });
+        formData.append("id", user.userId);
+        let result = await reqChangeAvatar(formData);
+        if (result.success) {
+          ElMessage.success({ message: "保存成功", showClose: true });
+          reload();
+        } else {
+          ElMessage.error({ message: "网络异常", showClose: true });
+          avatarLoading.value = false;
+        }
+      }
     };
 
     const online = ref(true);
@@ -201,6 +253,9 @@ export default {
     };
 
     const showPasswordReset = ref(false);
+    const showAvatar = ref(false);
+    const showQRCode = ref(false);
+    const randomNum = ref(0);
 
     watch(show, () => {
       if (show.value === true) {
@@ -213,12 +268,10 @@ export default {
       isShow,
       open,
       close,
-      uploadRef,
+      fileList,
       avatarUrl,
       avatarLoading,
       checkImage,
-      uploadSucceed,
-      uploadFailed,
       saveAvatar,
       online,
       statusLoading,
@@ -231,6 +284,9 @@ export default {
       showInput,
       addTag,
       showPasswordReset,
+      showAvatar,
+      showQRCode,
+      randomNum,
     };
   },
 };
@@ -293,7 +349,7 @@ export default {
   height: 100px;
   width: 100px;
 }
-.avatar .avatar-submit {
+.avatar .avatar-button {
   align-self: flex-end;
   margin-left: 10px;
 }
@@ -304,19 +360,54 @@ export default {
 }
 .tags {
   display: flex;
-  flex-flow: row wrap;
-  align-items: center;
+  flex-flow: column wrap;
   margin-top: 30px;
 }
 .tags .tags-item {
-  margin-top: 5px;
+  margin-top: 18px;
+}
+.tags .el-tag {
+  font-size: 14px;
+  padding-left: 16px;
 }
 .tags .tags-input {
-  margin-top: 5px;
+  margin-top: 18px;
   width: 100px;
-  height: 30px;
+  height: 32px;
 }
 .password {
-  margin-top: 100px;
+  margin-top: 60px;
+}
+.preview {
+  display: flex;
+  justify-content: center;
+  padding: 0 10px;
+  padding-top: 5px;
+  padding-bottom: 15px;
+}
+.contact {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding-bottom: 20px;
+}
+.contact .tip {
+  font-size: 18px;
+  color: var(--text-color-secondary);
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.drawer-footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.drawer-footer a {
+  text-decoration: none;
+}
+.drawer-footer .button {
+  font-size: 16px;
+  margin-right: 10px;
+  margin-bottom: 20px;
 }
 </style>

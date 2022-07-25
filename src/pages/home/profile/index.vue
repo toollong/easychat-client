@@ -21,7 +21,11 @@
     <div class="profile">
       <figure>
         <el-avatar
-          :src="'http://49.235.73.114:9000/easychat' + userInfo.avatar"
+          :src="
+            userInfo.avatar
+              ? 'http://49.235.73.114:9000/easychat' + userInfo.avatar
+              : ''
+          "
           :size="80"
           @error="() => true"
         >

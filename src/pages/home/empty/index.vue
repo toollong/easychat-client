@@ -7,6 +7,9 @@
       <p class="description">
         所 有 的 相 遇 都 是 久 别 重 逢，该 遇 见 的 人 总 归 不 晚
       </p>
+      <div class="footer">
+        <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
+      </div>
     </template>
   </el-empty>
 </template>
@@ -21,7 +24,19 @@ export default {
 .empty {
   flex: 1;
 }
+.empty >>> .el-empty__image {
+  margin-top: 40px;
+}
+.empty >>> .el-empty__description {
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: space-between;
+  flex: 1;
+}
 .empty .description {
   font-size: 20px;
+}
+.empty .footer {
+  margin-bottom: 0;
 }
 </style>

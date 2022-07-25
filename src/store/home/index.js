@@ -70,9 +70,11 @@ const actions = {
         let result = await reqGetChatList({ id: userId });
         if (result.success) {
             commit("CHATLIST", result.data.sort((obj1, obj2) => {
-                if (obj1.createTime > obj2.createTime) {
+                let time1 = obj1.latestChatHistory ? obj1.latestChatHistory.createTime : obj1.sessionTime;
+                let time2 = obj2.latestChatHistory ? obj2.latestChatHistory.createTime : obj2.sessionTime;
+                if (time1 > time2) {
                     return -1;
-                } else if (obj1.createTime < obj2.createTime) {
+                } else if (time1 < time2) {
                     return 1;
                 } else {
                     return 0;

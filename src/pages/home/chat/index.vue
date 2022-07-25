@@ -4,7 +4,11 @@
       <div class="header-user">
         <figure>
           <el-avatar
-            :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
+            :src="
+              friend.avatar
+                ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                : ''
+            "
             size="large"
             shape="square"
             @error="() => true"
@@ -113,7 +117,11 @@
               </div>
               <div v-else class="header">
                 <el-avatar
-                  :src="'http://49.235.73.114:9000/easychat' + friend.avatar"
+                  :src="
+                    friend.avatar
+                      ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                      : ''
+                  "
                   :size="45"
                   @error="() => true"
                 >
@@ -134,12 +142,27 @@
               <div v-if="message.type === 1" class="content-image">
                 <el-image
                   class="image"
-                  :src="message.content"
+                  :src="
+                    message.content
+                      ? 'http://49.235.73.114:9000/easychat' + message.content
+                      : ''
+                  "
                   fit="contain"
-                  :preview-src-list="[message.content]"
+                  :preview-src-list="[
+                    'http://49.235.73.114:9000/easychat' + message.content,
+                  ]"
                   hide-on-click-modal
-                  lazy
-                />
+                  @error="() => true"
+                >
+                  <template #placeholder>
+                    <div style="height: 200px"></div>
+                  </template>
+                  <template #error>
+                    <img
+                      src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                    />
+                  </template>
+                </el-image>
               </div>
               <div v-if="message.type === 2" class="content">
                 [暂不支持语音消息]
@@ -273,7 +296,13 @@
           </el-tooltip>
         </div>
       </form>
-      <ImgUpload v-show="showImgUpload" />
+      <ImgUpload
+        v-show="showImgUpload"
+        :friend="friend.userId"
+        :session="showChat"
+        :scrollbar="scrollbarRef"
+        :chatBody="chatBodyRef"
+      />
       <FileUpload v-show="showFileUpload" />
     </footer>
   </div>
@@ -365,6 +394,13 @@ export default {
         socket.emit("sendMsg", message, (response) => {
           console.log(response);
           if (response) {
+            if (response === "notFriend") {
+              ElMessage.error({
+                message: "你还不是他（她）的好友",
+                showClose: true,
+              });
+              return;
+            }
             if (response === "offline") {
               ElMessage.warning({ message: "对方不在线", showClose: true });
             }
@@ -443,6 +479,7 @@ export default {
 
     return {
       user,
+      showChat,
       chatHistoryList,
       friend,
       scrollbarRef,
@@ -608,8 +645,9 @@ export default {
   margin-right: 50px;
 }
 .chat-body .messages .message-item .message .content-image {
-  display: flex;
-  width: 35%;
+  display: block;
+  min-width: 120px;
+  max-width: 30%;
   margin-left: 45px;
 }
 .chat-body .messages .message-item.send .message .content-image {

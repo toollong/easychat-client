@@ -100,7 +100,10 @@
                 >
                   <el-avatar
                     :src="
-                      'http://49.235.73.114:9000/easychat' + friend.friendAvatar
+                      friend.friendAvatar
+                        ? 'http://49.235.73.114:9000/easychat' +
+                          friend.friendAvatar
+                        : ''
                     "
                     :size="45"
                     @error="() => true"
@@ -115,7 +118,10 @@
                 <div class="avatar-card">
                   <el-avatar
                     :src="
-                      'http://49.235.73.114:9000/easychat' + friend.friendAvatar
+                      friend.friendAvatar
+                        ? 'http://49.235.73.114:9000/easychat' +
+                          friend.friendAvatar
+                        : ''
                     "
                     @error="() => true"
                   >
@@ -348,7 +354,7 @@ export default {
         console.log("收到好友申请：" + JSON.stringify(friendVerify));
         callback();
         friendVerifyList.value.splice(0, 0, friendVerify);
-        hideBadge.value = true;
+        hideBadge.value = false;
       });
 
       socket.on("applySucceed", (chatSession) => {
@@ -362,7 +368,7 @@ export default {
         );
         if (index >= 0) {
           friendVerifyList.value[index].status = 1;
-          hideBadge.value = true;
+          hideBadge.value = false;
         }
         chatList.value.splice(0, 0, chatSession);
       });
@@ -375,7 +381,7 @@ export default {
         );
         if (index >= 0) {
           friendVerifyList.value[index].status = 2;
-          hideBadge.value = true;
+          hideBadge.value = false;
         }
       });
     });
