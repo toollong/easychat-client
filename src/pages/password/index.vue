@@ -23,6 +23,7 @@
             :rules="firstRules"
             size="large"
             hide-required-asterisk
+            @keydown.enter="toSecondStep(firstFormRef)"
             @submit.prevent
           >
             <p>请输入要重置密码的用户名</p>
@@ -85,7 +86,7 @@
                 type="primary"
                 :disabled="showCount"
                 plain
-                @click="sendVerifyCode"
+                @click="sendVerifyCode(secondFormRef)"
               >
                 <span v-show="!showCount">发送验证码</span>
                 <span v-show="showCount">重新发送({{ count }}s)</span>
@@ -193,6 +194,7 @@ import {
   reqValidateUsername,
 } from "@/api";
 import { encryptEmail } from "@/utils/encrypt";
+import { getCookie } from "@/utils/cookie";
 import SlideVerify from "vue3-slide-verify";
 
 export default {
@@ -321,16 +323,16 @@ export default {
           formEl.validateField("checkPassword", async (valid) => {
             if (valid) {
               active.value = 3;
-              // let result = await reqChangePassword({
-              //   userId: user.userId,
-              //   newPassword: thirdForm.newPassword,
-              //   checkPassword: thirdForm.checkPassword,
-              // });
-              // if (result.success) {
-              //   active.value = 3;
-              // } else {
-              //   ElMessage.error("网络异常，请重试！");
-              // }
+              let result = await reqChangePassword({
+                userId: user.userId,
+                newPassword: thirdForm.newPassword,
+                checkPassword: thirdForm.checkPassword,
+              });
+              if (result.success) {
+                active.value = 3;
+              } else {
+                ElMessage.error("网络异常，请重试！");
+              }
             } else {
               return false;
             }
@@ -384,8 +386,9 @@ export default {
     const showCount = ref(false);
     const count = ref(-1);
     const timer = ref();
-    const sendVerifyCode = async () => {
-      await secondFormRef.value.validateField("email", (valid) => {
+    const sendVerifyCode = (formEl) => {
+      if (!formEl) return;
+      formEl.validateField("email", (valid) => {
         if (valid) {
           let value = getCookie("verify");
           if (value) {

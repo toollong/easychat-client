@@ -8,7 +8,10 @@
         所 有 的 相 遇 都 是 久 别 重 逢，该 遇 见 的 人 总 归 不 晚
       </p>
       <div class="footer">
-        <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
+        <p>Copyright © 2022 toollong. All Rights Reserved.</p>
+        <a href="https://beian.miit.gov.cn/" target="_blank">
+          鲁ICP备2022024710号-1
+        </a>
       </div>
     </template>
   </el-empty>
@@ -22,12 +25,13 @@ export default {
 
 <style scoped>
 .empty {
+  padding-bottom: 20px;
   flex: 1;
 }
-.empty >>> .el-empty__image {
+.empty:deep(.el-empty__image) {
   margin-top: 40px;
 }
-.empty >>> .el-empty__description {
+.empty:deep(.el-empty__description) {
   display: flex;
   flex-flow: column nowrap;
   justify-content: space-between;
@@ -38,5 +42,15 @@ export default {
 }
 .empty .footer {
   margin-bottom: 0;
+}
+.empty .footer p {
+  margin-bottom: 5px;
+}
+.empty .footer a {
+  color: var(--text-color-secondary);
+  text-decoration: none;
+}
+.empty .footer a:hover {
+  color: var(--color-primary-light);
 }
 </style>

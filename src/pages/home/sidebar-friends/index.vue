@@ -116,34 +116,40 @@
               </template>
               <template #default>
                 <div class="avatar-card">
-                  <el-avatar
-                    :src="
-                      friend.friendAvatar
-                        ? 'http://49.235.73.114:9000/easychat' +
-                          friend.friendAvatar
-                        : ''
-                    "
-                    @error="() => true"
-                  >
-                    <img
-                      src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-                    />
-                  </el-avatar>
-                  <div>
-                    <p class="avatar-card-name">
+                  <div class="header">
+                    <el-avatar
+                      :src="
+                        friend.friendAvatar
+                          ? 'http://49.235.73.114:9000/easychat' +
+                            friend.friendAvatar
+                          : ''
+                      "
+                      @error="() => true"
+                    >
+                      <img
+                        src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
+                      />
+                    </el-avatar>
+                    <p>
                       {{ friend.friendNickName }}
                     </p>
-                    <p
-                      class="avatar-card-tag"
-                      v-if="friend.friendTags !== null"
-                    >
-                      {{ friend.friendTags.join(" ") }}
-                    </p>
                   </div>
-                  <p>
+                  <p class="tags" v-if="friend.friendTags">
+                    <el-space wrap>
+                      <el-tag
+                        v-for="tag in friend.friendTags.split(',')"
+                        :key="tag"
+                        size="small"
+                      >
+                        {{ tag }}
+                      </el-tag>
+                    </el-space>
+                  </p>
+                  <p class="no-tags" v-else>暂无标签</p>
+                  <p class="introduction">
                     {{
-                      friend.introduction
-                        ? friend.introduction
+                      friend.friendIntro
+                        ? friend.friendIntro
                         : "这个人很神秘，什么都没有写..."
                     }}
                   </p>
@@ -210,7 +216,7 @@ import {
   toRefs,
 } from "vue";
 import { useStore } from "vuex";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
 import FriendAdd from "@/pages/home/sidebar-friends/friend-add";
 import FriendVerify from "@/pages/home/sidebar-friends/friend-verify";
 import RemarkReset from "@/pages/home/sidebar-friends/remark-reset";
@@ -267,7 +273,12 @@ export default {
     };
     const addNewChat = (response) => {
       emit("hideSidebar", 1);
-      chatList.value.splice(0, 0, response);
+      let chatIndex = chatList.value.findIndex(
+        (chat) => chat.sessionId === response.sessionId
+      );
+      if (chatIndex < 0) {
+        chatList.value.splice(0, 0, response);
+      }
       emit("update:showChat", response.sessionId);
     };
     const toChat = (friend) => {
@@ -281,7 +292,6 @@ export default {
           user.userId,
           friend.friendUserId,
           (response) => {
-            console.log(response);
             if (response) {
               chatList.value.splice(0, 0, response);
               chatSession = response;
@@ -314,26 +324,32 @@ export default {
         cancelButtonText: "取消",
         beforeClose: async (action, instance, done) => {
           if (action === "confirm") {
-            socket.emit("removeFriend", friend.friendUserId, (response) => {
-              if (response) {
-                console.log(response);
-                let friendIndex = friendList.value.findIndex(
-                  (item) => item.friendUserId === friend.friendUserId
-                );
-                friendList.value.splice(friendIndex, 1);
-                let chatIndex = chatList.value.findIndex(
-                  (chat) => chat.friendUserId === friend.friendUserId
-                );
-                if (chatIndex >= 0) {
-                  if (showChat.value === chatList.value[chatIndex].sessionId) {
-                    emit("update:showChat", "");
+            socket.emit(
+              "removeFriend",
+              user.userId,
+              friend.friendUserId,
+              (response) => {
+                if (response) {
+                  let friendIndex = friendList.value.findIndex(
+                    (item) => item.friendUserId === friend.friendUserId
+                  );
+                  friendList.value.splice(friendIndex, 1);
+                  let chatIndex = chatList.value.findIndex(
+                    (chat) => chat.friendUserId === friend.friendUserId
+                  );
+                  if (chatIndex >= 0) {
+                    if (
+                      showChat.value === chatList.value[chatIndex].sessionId
+                    ) {
+                      emit("update:showChat", "");
+                    }
+                    chatList.value.splice(chatIndex, 1);
                   }
-                  chatList.value.splice(chatIndex, 1);
+                } else {
+                  ElMessage.error({ message: "网络异常", showClose: true });
                 }
-              } else {
-                ElMessage.error({ message: "网络异常", showClose: true });
               }
-            });
+            );
             done();
           } else {
             done();
@@ -351,14 +367,17 @@ export default {
       hideBadge.value = index < 0;
 
       socket.on("receiveVerify", (friendVerify, callback) => {
-        console.log("收到好友申请：" + JSON.stringify(friendVerify));
         callback();
         friendVerifyList.value.splice(0, 0, friendVerify);
         hideBadge.value = false;
+        ElNotification.info({
+          title: "你有一条好友验证消息",
+          message: friendVerify.senderNickName + " 请求添加你为好友",
+          duration: 5000,
+        });
       });
 
       socket.on("applySucceed", (chatSession) => {
-        console.log(chatSession.friendNickName + "已同意好友请求");
         // store.dispatch("home/getFriendList");
         store.dispatch("home/getFriendList", user.userId);
         let index = friendVerifyList.value.findIndex(
@@ -371,10 +390,14 @@ export default {
           hideBadge.value = false;
         }
         chatList.value.splice(0, 0, chatSession);
+        ElNotification.info({
+          title: "你有一条好友验证消息",
+          message: chatSession.friendNickName + " 已同意你的好友请求",
+          duration: 5000,
+        });
       });
 
       socket.on("applyFailed", (senderId, receiverId) => {
-        console.log(receiverId + "已拒绝好友请求");
         let index = friendVerifyList.value.findIndex(
           (verify) =>
             verify.senderId === senderId && verify.receiverId === receiverId
@@ -382,6 +405,13 @@ export default {
         if (index >= 0) {
           friendVerifyList.value[index].status = 2;
           hideBadge.value = false;
+          ElNotification.info({
+            title: "你有一条好友验证消息",
+            message:
+              friendVerifyList.value[index].receiverNickName +
+              " 已拒绝你的好友请求",
+            duration: 5000,
+          });
         }
       });
     });
@@ -445,7 +475,7 @@ export default {
 .friends header .badge {
   height: 24px;
 }
-.friends header .badge >>> .el-badge__content.is-dot {
+.friends header .badge:deep(.el-badge__content.is-dot) {
   height: 10px;
   width: 10px;
   right: 8px;
@@ -552,19 +582,33 @@ export default {
 }
 .avatar-card {
   display: flex;
-  gap: 10px;
   flex-direction: column;
+  padding: 0 5px;
 }
-.avatar-card p {
-  margin: 0;
+.avatar-card .header {
+  display: flex;
+  align-items: center;
 }
-.avatar-card-name {
-  font-size: 16px;
-  font-weight: 500;
-  color: var(--text-color-primary);
+.avatar-card .header p {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-color-regular);
+  margin: 5px 0;
+  margin-left: 10px;
 }
-.avatar-card-tag {
+.avatar-card .tags {
+  margin: 10px 0;
+}
+.avatar-card .no-tags {
   font-size: 12px;
   color: var(--text-color-secondary);
+  margin-top: 10px;
+  margin-left: 2px;
+  margin-bottom: 8px;
+}
+.avatar-card .introduction {
+  color: var(--text-color-secondary);
+  margin: 0;
+  margin-left: 2px;
 }
 </style>

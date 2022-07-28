@@ -322,7 +322,7 @@ export default {
 .menu li .badge {
   height: 24px;
 }
-.menu li .badge >>> .el-badge__content.is-dot {
+.menu li .badge:deep(.el-badge__content.is-dot) {
   height: 10px;
   width: 10px;
   right: 0;

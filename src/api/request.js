@@ -5,21 +5,31 @@ import "nprogress/nprogress.css";
 
 const requests = axios.create({
     baseURL: '/api',
-    timeout: 5000
+    timeout: 30000
 })
 
 requests.interceptors.request.use((config) => {
+    if (config.url.includes("/auth/")
+        || config.url.includes("/register")
+        || config.url.includes("/verifyCode/")
+        || config.url.includes("/validate")
+        || config.url.includes("/changePassword")) {
+        return config;
+    }
     nprogress.start();
     return config;
 }, (error) => {
-    return Promise.reject(new Error("网络异常！"));
+    return Promise.reject(error);
 })
 
 requests.interceptors.response.use((response) => {
+    if (response.status === 200) {
+        nprogress.done();
+        return response.data;
+    }
     nprogress.done();
-    return response.data;
 }, (error) => {
-    return Promise.reject(new Error("网络异常！"));
+    return Promise.reject(error);
 })
 
 export default requests;

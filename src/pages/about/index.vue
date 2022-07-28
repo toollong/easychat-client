@@ -1,47 +1,130 @@
 <template>
   <div class="about">
-    <div class="about-header"><img src="/images/logo.svg" /></div>
-    <div class="about-body">
-      <p class="introduction">
-        <span class="title">EasyChat</span>
-        是一个可以在线聊天的即时通讯平台，完全由个人设计和开发，初衷主要是觉得好玩儿，顺便学习一些新东西，
-        所以网站有些简陋，属实是本人的能力、财力有限。欢迎大家使用体验，也期待大佬们的交流与反馈。
-      </p>
+    <el-scrollbar max-height="100vh">
+      <div class="about-header"><img src="/images/logo.svg" /></div>
+      <div class="about-body">
+        <p class="introduction">
+          <a href="https://toollong.icu" target="_blank">EasyChat</a>
+          是一个可以在线聊天的即时通讯平台，完全由个人设计和开发，初衷主要是觉得好玩儿，顺便学习一些新东西，所以网站有些简陋，属实是本人的能力和财力有限。
+          网站没有任何付费内容，所有内容完全免费，欢迎大家使用体验，也期待大佬们的交流与反馈。
+        </p>
+        <el-collapse class="collapse" v-model="activeName" accordion>
+          <el-collapse-item title="功能介绍" name="1">
+            <div class="function">
+              <span>已实现的功能：</span>
+              <p>注册</p>
+              <p>登录</p>
+              <p>找回密码</p>
 
-      <p>版本更新：<el-tag type="success">v1.0.0</el-tag></p>
+              <p>添加聊天</p>
+              <p>删除聊天</p>
+              <p>发送文本消息</p>
+              <p>发送 Emoji 表情<span>（Windows 7 可能无法正常显示）</span></p>
+              <p>发送图片<span>（批量发送）</span></p>
+              <p>发送文件</p>
+              <p>新消息通知</p>
 
-      <p>网站还在持续建设中，更多的功能敬请期待...</p>
-      <div>
-        <p style="margin-top: 50px; margin-bottom: 0">
-          本网站前端使用 Vue CLI，后端使用 Java，服务器分别是 Nginx 和 Tomcat 。
-        </p>
-        <p style="margin: 0">前端：</p>
-        <p style="margin: 0">
-          Vue 3，Vue Router，Vuex，Element Plus，Socket.IO，Axios，VueUse
-        </p>
-        <p style="margin: 0">后端：</p>
-        <p style="margin-top: 0">
-          Spring
-          Cloud，Nacos，MyBatis-Plus，Netty-socketio，MinIO，Gson，MySQL，Redis，Docker
-        </p>
+              <p>搜索用户</p>
+              <p>修改好友备注</p>
+              <p>好友申请</p>
+              <p>好友验证</p>
+              <p>好友删除<span>（单向删除）</span></p>
+              <p>验证消息通知</p>
+
+              <p>查看资料</p>
+              <p>编辑资料</p>
+              <p>设置<span>（头像、隐身、标签、修改密码）</span></p>
+              <p>夜间模式</p>
+              <p>小抽屉<span>（搜一搜、日历）</span></p>
+
+              <span>暂未实现的功能：</span>
+              <p>语音通话、视频通话、聊天组、特别关心、收藏、听音乐、看电影</p>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="版本更新" name="2">
+            <div class="version">
+              <p class="tip">网站正在持续建设中，更多的功能敬请期待...</p>
+              <el-timeline>
+                <el-timeline-item timestamp="将来" placement="top" type="info">
+                  <el-card>
+                    <el-tag type="info">v1.0.1</el-tag>
+                    <p>修复了部分 BUG</p>
+                  </el-card>
+                </el-timeline-item>
+                <el-timeline-item
+                  timestamp="2022-08-01"
+                  placement="top"
+                  type="success"
+                >
+                  <el-card>
+                    <el-tag type="success">v1.0.0</el-tag>
+                    <p>发布上线</p>
+                  </el-card>
+                </el-timeline-item>
+              </el-timeline>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="BUG" name="3">
+            <div class="bug">
+              <p>目前已知的 BUG ：</p>
+              <ul>
+                <li>聊天表情显示问题（Win7系统 Emoji 表情可能无法正常显示）</li>
+                <li>
+                  单次发送多张图片，图片在消息列表中的显示问题（刷新页面后可正确显示）
+                </li>
+                <li>发送文件过大导致发送失败（后端 Java 内存溢出）</li>
+              </ul>
+            </div>
+          </el-collapse-item>
+          <el-collapse-item title="技术栈" name="4">
+            <div class="technology">
+              <p>
+                本网站前端使用 Vue CLI ，部署在 Nginx ；后端使用 Java ，部署在
+                Tomcat 。
+              </p>
+              <span>前端：</span>
+              <div>
+                Vue 3，Vue Router，Vuex，Element
+                Plus，Socket.IO，Axios，VueUse...
+              </div>
+              <span>后端：</span>
+              <div>
+                Spring
+                Cloud，Nacos，MyBatis-Plus，Netty-socketio，MinIO，Gson，MySQL，Redis，
+                Docker...
+              </div>
+            </div>
+          </el-collapse-item>
+        </el-collapse>
+
+        <div>
+          <p class="email">
+            本人邮箱：toollong@163.com
+            <a @click="showQRCode = true">想加微信？</a>
+          </p>
+          <p class="blog">
+            本人博客：<a
+              href="https://blog.csdn.net/weixin_49523761"
+              target="_blank"
+              >https://blog.csdn.net/weixin_49523761</a
+            >
+          </p>
+          <p class="attention">
+            <span class="title">注意：</span
+            >本网站仅供学习交流使用，由于网站的安全保障和加密措施并不完善，<span
+              class="text-danger"
+              >请勿在网站中输入敏感信息</span
+            >，避免信息泄露的风险。
+          </p>
+        </div>
       </div>
-
-      <p class="email">
-        本人邮箱：toollong@163.com
-        <a @click="showQRCode = true">想加微信？</a>
-      </p>
-      <p class="blog">本人博客：https://blog.csdn.net/weixin_49523761</p>
-      <p class="attention">
-        <span class="title">注意：</span
-        >本网站仅供学习交流使用，由于网站的安全保障和加密措施并不完善，<span
-          class="text-danger"
-          >请勿在网站中输入敏感信息</span
-        >，避免信息泄露的风险。
-      </p>
-    </div>
-    <div class="about-footer">
-      <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
-    </div>
+      <div class="about-footer">
+        <p>Copyright © 2022 toollong. All Rights Reserved.</p>
+        <a href="https://beian.miit.gov.cn/" target="_blank">
+          鲁ICP备2022024710号-1
+        </a>
+      </div>
+    </el-scrollbar>
     <el-dialog
       v-model="showQRCode"
       width="30%"
@@ -62,9 +145,11 @@ import { ref } from "vue";
 export default {
   name: "About",
   setup() {
+    const activeName = ref("0");
     const showQRCode = ref(false);
 
     return {
+      activeName,
       showQRCode,
     };
   },
@@ -74,16 +159,16 @@ export default {
 <style scoped>
 .about {
   display: flex;
-  height: 100vh;
+  min-height: 100vh;
   flex-flow: column nowrap;
   background-color: rgb(244, 244, 244);
   color: #303133;
   overflow: hidden;
 }
 .about .about-header {
-  margin: auto;
-  margin-top: 50px;
-  margin-bottom: 0;
+  text-align: center;
+  margin-top: 40px;
+  margin-bottom: 20px;
 }
 .about .about-body {
   width: 800px;
@@ -95,8 +180,8 @@ export default {
 }
 .about .about-footer {
   color: #969696;
-  margin: auto;
-  margin-bottom: 80px;
+  text-align: center;
+  margin-bottom: 20px;
 }
 .about-header img {
   width: 80px;
@@ -104,11 +189,84 @@ export default {
 }
 .about-body .introduction {
   font-size: 18px;
+  letter-spacing: 0.6px;
   margin-top: 0;
 }
-.about-body .introduction .title {
+.about-body .introduction a {
   font-size: 20px;
   font-weight: 600;
+  color: #409eff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.about-body .introduction a:hover {
+  color: #a0cfff;
+}
+.about-body .collapse:deep(.el-collapse-item__header) {
+  height: 60px;
+  border-radius: 6px;
+  background-color: #d9ecff;
+  color: #606266;
+  font-size: 18px;
+  font-weight: 600;
+  margin-top: 20px;
+  padding-left: 20px;
+}
+.about-body .collapse:deep(.el-collapse-item__wrap) {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #ecf5ff;
+}
+.about-body .collapse:deep(.el-collapse-item__content) {
+  color: #606266;
+  font-size: 16px;
+  padding: 20px 40px;
+}
+.about-body .collapse:deep(.function) p {
+  margin: 5px 0;
+  margin-left: 50px;
+}
+.about-body .collapse:deep(.function) span {
+  color: #969696;
+}
+.about-body .collapse:deep(.el-timeline-item__content) {
+  width: 80%;
+}
+.about-body .collapse:deep(.version) .el-card {
+  border-radius: 10px;
+}
+.about-body .collapse:deep(.version) .tip {
+  color: #969696;
+  margin-top: 10px;
+  margin-left: 40px;
+  margin-bottom: 20px;
+}
+.about-body .collapse:deep(.version) p {
+  color: #606266;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.about-body .collapse:deep(.bug) p {
+  color: #969696;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+.about-body .collapse:deep(.technology) {
+  display: flex;
+  flex-flow: column wrap;
+}
+.about-body .collapse:deep(.technology) p {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+.about-body .collapse:deep(.technology) span {
+  color: #969696;
+}
+.about-body .collapse:deep(.technology) div {
+  margin-left: 1px;
+  margin-bottom: 10px;
 }
 .about-body .email {
   margin-top: 50px;
@@ -127,6 +285,14 @@ export default {
 .about-body .blog {
   margin-top: 0;
 }
+.about-body .blog a {
+  color: #409eff;
+  text-decoration: none;
+  cursor: pointer;
+}
+.about-body .blog a:hover {
+  color: #a0cfff;
+}
 .about-body .attention {
   margin-top: 30px;
 }
@@ -134,8 +300,15 @@ export default {
   font-size: 18px;
   font-weight: 600;
 }
-.text-success {
-  color: #67c23a;
+.about-footer p {
+  margin-bottom: 8px;
+}
+.about-footer a {
+  color: #969696;
+  text-decoration: none;
+}
+.about-footer a:hover {
+  color: #409eff;
 }
 .text-danger {
   color: #f56c6c;

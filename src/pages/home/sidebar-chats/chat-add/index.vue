@@ -17,6 +17,8 @@
             filterable
             clearable
             placeholder="请选择一个好友"
+            no-data-text="无好友"
+            no-match-text="无匹配好友"
           >
             <el-option
               v-for="(friend, index) in friendList"

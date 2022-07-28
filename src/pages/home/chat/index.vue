@@ -33,7 +33,7 @@
       <div class="header-action">
         <el-tooltip
           effect="light"
-          content="语音通话"
+          content="语音通话（敬请期待）"
           placement="bottom"
           :offset="6"
           :show-arrow="false"
@@ -46,7 +46,7 @@
         </el-tooltip>
         <el-tooltip
           effect="light"
-          content="视频通话"
+          content="视频通话（敬请期待）"
           placement="bottom"
           :offset="6"
           :show-arrow="false"
@@ -164,23 +164,34 @@
                   </template>
                 </el-image>
               </div>
-              <div v-if="message.type === 2" class="content">
+              <div v-if="message.type === 2" class="content-file">
+                <div class="file">
+                  <div class="file-icon">
+                    <icon-mdi-file />
+                  </div>
+                  <div class="file-info">
+                    <div class="filename">
+                      <span>{{ getFilename(message.content) }}</span>
+                    </div>
+                    <div class="options">
+                      <a
+                        class="download"
+                        :href="
+                          message.content
+                            ? 'http://49.235.73.114:9000/easychat' +
+                              message.content
+                            : ''
+                        "
+                      >
+                        下载
+                      </a>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div v-if="message.type === 3" class="content">
                 [暂不支持语音消息]
               </div>
-              <!-- <div v-if="message.type === 3" class="content">
-              <div class="file-icon">
-                <i class="fa fa-file-pdf-o"></i>
-              </div>
-              <div>
-                <div>
-                  important_documents.pdf <i class="text-muted small">(50KB)</i>
-                </div>
-                <ul class="list-inline">
-                  <li class="list-inline-item mb-0"><a href="#">下载</a></li>
-                  <li class="list-inline-item mb-0"><a href="#">查看</a></li>
-                </ul>
-              </div>
-            </div> -->
             </div>
           </div>
         </div>
@@ -264,7 +275,7 @@
           </el-tooltip>
           <el-tooltip
             effect="light"
-            content="语音"
+            content="语音（暂不支持）"
             placement="top"
             :offset="6"
             :show-arrow="false"
@@ -303,7 +314,13 @@
         :scrollbar="scrollbarRef"
         :chatBody="chatBodyRef"
       />
-      <FileUpload v-show="showFileUpload" />
+      <FileUpload
+        v-show="showFileUpload"
+        :friend="friend.userId"
+        :session="showChat"
+        :scrollbar="scrollbarRef"
+        :chatBody="chatBodyRef"
+      />
     </footer>
   </div>
 </template>
@@ -362,6 +379,15 @@ export default {
     const checkOnline = (userId) => {
       return onlineUsers.value.indexOf(userId) >= 0;
     };
+    const getFilename = (filePath) => {
+      let arr = filePath.split("/");
+      let filename = arr[arr.length - 1];
+      return filename.length > 20
+        ? filename.substring(0, 14) +
+            "..." +
+            filename.substring(filename.lastIndexOf(".") - 3)
+        : filename;
+    };
 
     const inputRef = ref();
     const inputValue = ref("");
@@ -391,29 +417,28 @@ export default {
           hasRead: 0,
           showTime: showTime,
         };
-        socket.emit("sendMsg", message, (response) => {
-          console.log(response);
+        socket.emit("sendMsg", message, (response, msg) => {
+          if (msg === "notFriend") {
+            ElMessage.error({
+              message: "你还不是他（她）的好友",
+              showClose: true,
+            });
+            return;
+          }
           if (response) {
-            if (response === "notFriend") {
-              ElMessage.error({
-                message: "你还不是他（她）的好友",
-                showClose: true,
-              });
-              return;
-            }
-            if (response === "offline") {
+            if (msg === "offline") {
               ElMessage.warning({ message: "对方不在线", showClose: true });
             }
-            chatHistoryList.value.push(message);
+            chatHistoryList.value.push(response);
             nextTick(() => {
               scrollbarRef.value.setScrollTop(chatBodyRef.value.scrollHeight);
             });
             inputValue.value = "";
             let chatIndex = chatList.value.findIndex(
-              (chat) => chat.sessionId === message.sessionId
+              (chat) => chat.sessionId === response.sessionId
             );
-            chatList.value[chatIndex].createTime = message.createTime;
-            chatList.value[chatIndex].latestChatHistory = message;
+            chatList.value[chatIndex].createTime = response.createTime;
+            chatList.value[chatIndex].latestChatHistory = response;
             let delChat = chatList.value.splice(chatIndex, 1)[0];
             chatList.value.splice(0, 0, delChat);
           } else {
@@ -485,6 +510,7 @@ export default {
       scrollbarRef,
       chatBodyRef,
       checkOnline,
+      getFilename,
       compareYear,
       compareDate,
       formatDate,
@@ -655,8 +681,48 @@ export default {
   margin-left: 0;
   margin-right: 45px;
 }
-.chat-body .messages .message-item .message .content-image .image {
+.content-image .image {
   border-radius: 6px;
+}
+.chat-body .messages .message-item .message .content-file {
+  display: block;
+  height: 100px;
+  width: 300px;
+  background-color: var(--color-info-light-8);
+  border-radius: 10px;
+  margin-left: 45px;
+}
+.chat-body .messages .message-item.send .message .content-file {
+  margin-left: 0;
+  margin-right: 45px;
+}
+.content-file .file {
+  display: flex;
+  height: 100%;
+  padding: 10px 15px;
+}
+.content-file .file .file-icon {
+  display: flex;
+  align-items: center;
+  font-size: 60px;
+}
+.content-file .file .file-info {
+  display: flex;
+  flex-flow: column wrap;
+  justify-content: space-around;
+  margin-left: 5px;
+}
+.content-file .file .file-info .filename {
+  color: var(--text-color-regular);
+  font-size: 16px;
+}
+.content-file .file .file-info .options .download {
+  color: var(--color-primary);
+  font-size: 16px;
+  text-decoration: none;
+}
+.content-file .file .file-info .options .download:hover {
+  color: var(--color-primary-light);
 }
 .chat footer {
   background-color: var(--bg-color);

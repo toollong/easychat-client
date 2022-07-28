@@ -88,6 +88,7 @@ export default {
       if (result.success) {
         user.avatar = "http://49.235.73.114:9000/easychat" + result.data.avatar;
         user.nickName = result.data.nickName;
+        socket.emit("online", user.userId, result.data.status);
       }
       // store.dispatch("home/getChatList");
       // store.dispatch("home/getFriendList");
@@ -95,9 +96,7 @@ export default {
       store.dispatch("home/getChatList", user.userId);
       store.dispatch("home/getFriendList", user.userId);
       store.dispatch("home/getFriendVerify", user.userId);
-      socket.emit("online", user.userId);
       socket.on("onlineUsers", (onlineUsers) => {
-        console.log("在线的用户：" + onlineUsers);
         store.commit("home/ONLINEUSERS", onlineUsers);
       });
     });

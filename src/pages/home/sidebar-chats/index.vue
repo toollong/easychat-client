@@ -157,26 +157,15 @@
                           : chat.latestChatHistory.type === 1
                           ? "[图片]"
                           : chat.latestChatHistory.type === 2
-                          ? "[语音]"
-                          : chat.latestChatHistory.type === 3
                           ? "[文件]"
+                          : chat.latestChatHistory.type === 3
+                          ? "[语音]"
                           : ""
                       }}
                     </p>
                   </div>
                   <div>
-                    <small v-if="chat.latestChatHistory.createTime === null">
-                      {{
-                        compareDate(chat.sessionTime)
-                          ? formatDate(chat.sessionTime, "a h:mm")
-                          : compareDate(chat.sessionTime, 1)
-                          ? "昨天"
-                          : compareDate(chat.sessionTime, 2)
-                          ? "前天"
-                          : formatDate(chat.sessionTime, "YYYY-MM-DD")
-                      }}
-                    </small>
-                    <small v-else>
+                    <small v-if="chat.latestChatHistory.createTime">
                       {{
                         compareDate(chat.latestChatHistory.createTime)
                           ? formatDate(
@@ -191,6 +180,17 @@
                               chat.latestChatHistory.createTime,
                               "YYYY-MM-DD"
                             )
+                      }}
+                    </small>
+                    <small v-else>
+                      {{
+                        compareDate(chat.sessionTime)
+                          ? formatDate(chat.sessionTime, "a h:mm")
+                          : compareDate(chat.sessionTime, 1)
+                          ? "昨天"
+                          : compareDate(chat.sessionTime, 2)
+                          ? "前天"
+                          : formatDate(chat.sessionTime, "YYYY-MM-DD")
                       }}
                     </small>
                     <div
@@ -254,7 +254,7 @@ import {
   watch,
 } from "vue";
 import { useStore } from "vuex";
-import { ElMessage, ElMessageBox } from "element-plus";
+import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
 import { compareDate, formatDate } from "@/utils/date";
 import ChatAdd from "@/pages/home/sidebar-chats/chat-add";
 
@@ -281,23 +281,12 @@ export default {
 
     const showChatAdd = ref(false);
     const addNewChat = (friend) => {
-      // let response = {
-      //   sessionId: "10000000011",
-      //   userId: user.userId,
-      //   friendUserId: "20000000005",
-      //   friendNickName: "11111",
-      //   friendRemark: "22222",
-      //   friendAvatar: "/images/avatar3.jpg",
-      //   createTime: "2022-06-16 16:14:56",
-      //   latestChatHistory: {},
-      // };
       // 发送请求修改该好友的sessionId和sessionTime(sessionId需要双方统一！)
       socket.emit(
         "addSession",
         user.userId,
         friend.friendUserId,
         (response) => {
-          console.log(response);
           if (response) {
             chatList.value.splice(0, 0, response);
             emit("update:showChat", response.sessionId);
@@ -348,7 +337,6 @@ export default {
               user.userId,
               chat.friendUserId,
               (response) => {
-                console.log(response);
                 if (response) {
                   if (showChat.value === chat.sessionId) {
                     emit("update:showChat", "");
@@ -378,7 +366,6 @@ export default {
       }, 1000);
 
       socket.on("receiveMsg", (message, callback) => {
-        console.log("收到消息：" + JSON.stringify(message));
         callback();
         let chatIndex = chatList.value.findIndex(
           (chat) => chat.sessionId === message.sessionId
@@ -398,7 +385,6 @@ export default {
             user.userId,
             message.senderId,
             (response) => {
-              console.log(response);
               if (response) {
                 if (response !== "exist") {
                   response.createTime = message.createTime;
@@ -410,6 +396,32 @@ export default {
               }
             }
           );
+        }
+        let chat = chatList.value.find(
+          (chat) => chat.sessionId === message.sessionId
+        );
+        if (chat) {
+          ElNotification.success({
+            title: "你有一条新消息（点我查看）",
+            message:
+              (chat.friendRemark ? chat.friendRemark : chat.friendNickName) +
+              "：" +
+              (message.type === 0
+                ? message.content.length > 20
+                  ? message.content.substring(0, 19) + "..."
+                  : message.content
+                : message.type === 1
+                ? "[图片]"
+                : message.type === 2
+                ? "[文件]"
+                : message.type === 3
+                ? "[语音]"
+                : ""),
+            duration: 5000,
+            onClick: () => {
+              emit("update:showChat", chat.sessionId);
+            },
+          });
         }
       });
     });
@@ -619,7 +631,7 @@ export default {
 .list-item-badge .badge {
   --el-badge-font-size: 20px;
 }
-.list-item-badge .badge >>> .el-badge__content {
+.list-item-badge .badge:deep(.el-badge__content) {
   height: 20px;
   padding-bottom: 10px;
 }

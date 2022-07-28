@@ -37,7 +37,9 @@
       <span class="remark">{{ remark }}</span>
       <div class="tags">
         <el-space wrap>
-          <el-tag v-for="tag in userInfo.tags" :key="tag">{{ tag }}</el-tag>
+          <el-tag v-for="tag in tags" :key="tag">
+            {{ tag }}
+          </el-tag>
         </el-space>
       </div>
       <div class="introduction">
@@ -129,6 +131,7 @@ export default {
       let result = await reqGetUserInfo({ id: show.value });
       if (result.success) {
         userInfo.value = result.data;
+        tags.value = result.data.tags ? result.data.tags.split(",") : [];
         if (show.value === user.userId) {
           remark.value = result.data.nickName;
         } else {
@@ -150,6 +153,7 @@ export default {
     const friendList = computed(() => store.state.home.friendList);
     const userInfo = ref({});
     const remark = ref("");
+    const tags = ref([]);
 
     watch(show, () => {
       if (show.value) {
@@ -163,6 +167,7 @@ export default {
       close,
       userInfo,
       remark,
+      tags,
       formatDate,
     };
   },

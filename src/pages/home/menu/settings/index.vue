@@ -36,12 +36,6 @@
             fit="cover"
             @error="() => true"
           >
-            <template #placeholder>
-              <img
-                style="height: 100px"
-                src="https://cube.elemecdn.com/e/fd/0fc7d20532fdaf769a25683617711png.png"
-              />
-            </template>
             <template #error>
               <img
                 style="height: 100px"
@@ -96,8 +90,9 @@
             ref="inputRef"
             v-if="inputVisible"
             v-model.trim="inputValue"
+            maxlength="10"
             spellcheck="false"
-            @keyup.enter="addTag"
+            @keydown.enter="addTag"
             @blur="addTag"
           />
           <el-button class="tags-input" v-else @click="showInput">
@@ -145,9 +140,14 @@
 </template>
 
 <script>
-import { inject, nextTick, ref, toRefs, watch } from "vue";
+import { getCurrentInstance, inject, nextTick, ref, toRefs, watch } from "vue";
 import { ElMessage } from "element-plus";
-import { reqChangeAvatar } from "@/api";
+import {
+  reqAddTag,
+  reqChangeAvatar,
+  reqGetUserInfo,
+  reqRemoveTag,
+} from "@/api";
 import PasswordReset from "@/pages/home/menu/settings/password-reset";
 
 export default {
@@ -160,15 +160,21 @@ export default {
   },
   emits: ["update:show"],
   setup(props, { emit }) {
+    const socket =
+      getCurrentInstance().appContext.config.globalProperties.socket;
     const user = inject("user");
     const reload = inject("reload");
 
     const { show } = toRefs(props);
     const isShow = ref(false);
-    const open = () => {
-      avatarUrl.value = user.avatar;
-      online.value = true;
-      tags.value = ["时间管理大师"];
+    const open = async () => {
+      let result = await reqGetUserInfo({ id: user.userId });
+      if (result.success) {
+        avatarUrl.value =
+          "http://49.235.73.114:9000/easychat" + result.data.avatar;
+        online.value = result.data.status === 1 ? true : false;
+        tags.value = result.data.tags ? result.data.tags.split(",") : [];
+      }
     };
     const close = () => {
       emit("update:show", false);
@@ -179,11 +185,11 @@ export default {
     const avatarLoading = ref(false);
     const checkImage = (file, files) => {
       if (file.raw.type !== "image/jpeg" && file.raw.type !== "image/png") {
-        ElMessage.error("上传的图片仅支持 JPG 或 PNG 格式！");
+        ElMessage.warning("上传的图片仅支持 JPG 或 PNG 格式！");
         return;
       }
       if (file.size / 1024 / 1024 > 2) {
-        ElMessage.error("上传的图片大小不能超过 2M ！");
+        ElMessage.warning("上传的图片大小不能超过 2M ！");
         return;
       }
       avatarUrl.value = URL.createObjectURL(file.raw);
@@ -213,11 +219,22 @@ export default {
     const changeStatus = () => {
       statusLoading.value = true;
       return new Promise((resolve) => {
-        setTimeout(() => {
-          ElMessage.success({ message: "设置成功", showClose: true });
-          statusLoading.value = false;
-          return resolve(true);
-        }, 1000);
+        socket.emit(
+          "changeStatus",
+          user.userId,
+          online.value === true ? 0 : 1,
+          (response) => {
+            if (response) {
+              ElMessage.success({ message: "设置成功", showClose: true });
+              statusLoading.value = false;
+              return resolve(true);
+            } else {
+              ElMessage.error({ message: "网络异常", showClose: true });
+              statusLoading.value = false;
+              return resolve(false);
+            }
+          }
+        );
       });
     };
 
@@ -225,31 +242,55 @@ export default {
     const inputRef = ref();
     const inputValue = ref("");
     const inputVisible = ref(false);
-    const removeTag = (tag) => {
-      tags.value.splice(tags.value.indexOf(tag), 1);
-    };
     const showInput = () => {
       inputVisible.value = true;
       nextTick(() => {
         inputRef.value.input.focus();
       });
     };
-    const addTag = () => {
+    const addTag = async () => {
       if (inputValue.value) {
-        if (tags.value.length > 2) {
-          ElMessage.warning({ message: "最多设置三个标签！", showClose: true });
-        } else {
-          let index = tags.value.findIndex((tag) => tag === inputValue.value);
-          if (index < 0) {
-            tags.value.push(inputValue.value);
-            ElMessage.success({ message: "添加成功", showClose: true });
+        if (inputValue.value.match(new RegExp("^[\u4e00-\u9fa50-9A-Za-z]+$"))) {
+          if (tags.value.length > 2) {
+            ElMessage.warning({
+              message: "最多设置三个标签！",
+              showClose: true,
+            });
           } else {
-            ElMessage.warning({ message: "重复的标签！", showClose: true });
+            let index = tags.value.findIndex((tag) => tag === inputValue.value);
+            if (index < 0) {
+              let result = await reqAddTag({
+                userId: user.userId,
+                tag: inputValue.value,
+              });
+              if (result.success) {
+                tags.value.push(inputValue.value);
+                ElMessage.success({ message: "添加成功", showClose: true });
+              } else {
+                ElMessage.error({ message: "网络异常", showClose: true });
+              }
+            } else {
+              ElMessage.warning({ message: "重复的标签！", showClose: true });
+            }
           }
+        } else {
+          ElMessage.warning({
+            message: "只能输入汉字、字母和数字！",
+            showClose: true,
+          });
         }
       }
       inputVisible.value = false;
       inputValue.value = "";
+    };
+    const removeTag = async (tag) => {
+      let result = await reqRemoveTag({ userId: user.userId, tag: tag });
+      if (result.success) {
+        tags.value.splice(tags.value.indexOf(tag), 1);
+        ElMessage.success({ message: "删除成功", showClose: true });
+      } else {
+        ElMessage.error({ message: "网络异常", showClose: true });
+      }
     };
 
     const showPasswordReset = ref(false);
@@ -407,7 +448,7 @@ export default {
 }
 .drawer-footer .button {
   font-size: 16px;
-  margin-right: 10px;
+  margin-right: 20px;
   margin-bottom: 20px;
 }
 </style>

@@ -22,7 +22,9 @@
           <el-table-column type="expand">
             <template #default="{ row }">
               <div class="apply-message">
-                <span>申请理由：{{ row.applyReason }}</span>
+                <span>
+                  申请理由：{{ row.applyReason ? row.applyReason : "无" }}
+                </span>
               </div>
             </template>
           </el-table-column>
@@ -239,7 +241,6 @@ export default {
             createTime: formatDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
           };
           socket.emit("agreeApply", friendInfo, (response) => {
-            console.log(response);
             if (response) {
               ElMessage.success({ message: "已同意", showClose: true });
               let index = friendVerifyList.value.findIndex(

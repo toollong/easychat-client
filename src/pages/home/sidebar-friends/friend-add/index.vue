@@ -307,11 +307,10 @@ export default {
             createTime: formatDate(new Date(), "YYYY-MM-DD HH:mm:ss"),
           };
           socket.emit("sendVerify", friendVerify, (response) => {
-            console.log(response);
             if (response) {
               ElMessage.success({ message: "已发送请求", showClose: true });
               showApplyForm.value = false;
-              friendVerifyList.value.splice(0, 0, friendVerify);
+              friendVerifyList.value.splice(0, 0, response);
             } else {
               ElMessage.error({ message: "网络异常", showClose: true });
             }

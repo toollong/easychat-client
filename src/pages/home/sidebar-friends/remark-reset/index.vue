@@ -138,7 +138,6 @@ export default {
             friend.userId,
             friend.remark,
             (response) => {
-              console.log(response);
               if (response) {
                 emit("resetRemark", response);
                 ElMessage.success({ message: "保存成功", showClose: true });

@@ -62,10 +62,22 @@
         没有账号?
         <router-link to="/register">立即注册</router-link>
       </p>
-      <p class="tip">登录即表示同意<a>《用户协议》</a><a>《隐私政策》</a></p>
+      <p class="tip">
+        登录即表示同意<a href="https://toollong.icu/about" target="_blank"
+          >《用户协议》</a
+        ><a href="https://toollong.icu/about" target="_blank">《隐私政策》</a>
+      </p>
     </div>
     <div class="login-footer">
-      <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
+      <div class="about">
+        <router-link to="/about" target="_blank">关于我们</router-link>
+        <a @click="showQRCode = true">联系我们</a>
+        <router-link to="/about" target="_blank">反馈建议</router-link>
+      </div>
+      <p>Copyright © 2022 toollong. All Rights Reserved.</p>
+      <a href="https://beian.miit.gov.cn/" target="_blank">
+        鲁ICP备2022024710号-1
+      </a>
     </div>
     <vue-particles
       color="#dedede"
@@ -84,6 +96,17 @@
       :clickEffect="true"
       clickMode="push"
     />
+    <el-dialog
+      v-model="showQRCode"
+      width="30%"
+      destroy-on-close
+      @open="randomNum = Math.floor(Math.random() * 6) + 1"
+    >
+      <div class="contact">
+        <p class="tip">扫一扫下面的二维码图案，加我微信</p>
+        <el-image :src="'/images/wechat/wechat' + randomNum + '.png'" />
+      </div>
+    </el-dialog>
     <el-dialog
       v-model="showVerification"
       title="请先完成安全验证"
@@ -155,6 +178,7 @@ export default {
       });
     };
 
+    const showQRCode = ref(false);
     const showVerification = ref(false);
     const verifyRef = ref();
     const successMsg = ref("");
@@ -200,6 +224,7 @@ export default {
       loginForm,
       rules,
       login,
+      showQRCode,
       showVerification,
       verifyRef,
       successMsg,
@@ -247,11 +272,10 @@ export default {
 }
 .login .login-footer {
   width: 400px;
-  height: 50px;
-  color: var(--color-white);
+  color: #dcdfe6;
   text-align: center;
   position: fixed;
-  bottom: 80px;
+  bottom: 40px;
   left: 0;
   right: 0;
   margin: auto;
@@ -317,7 +341,41 @@ export default {
   margin-top: 0;
 }
 .login-body .tip a {
+  color: #969696;
+  text-decoration: none;
+}
+.login-body .tip a:hover {
+  color: #0a80ff;
+}
+.login-footer .about {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.login-footer .about a {
+  margin-right: 20px;
   cursor: pointer;
+}
+.login-footer P {
+  margin-bottom: 8px;
+}
+.login-footer a {
+  color: #dcdfe6;
+  text-decoration: none;
+}
+.login-footer a:hover {
+  color: #409eff;
+}
+.contact {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding-bottom: 20px;
+}
+.contact .tip {
+  font-size: 18px;
+  color: var(--text-color-secondary);
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 .el-input {
   --el-input-text-color: #606266;

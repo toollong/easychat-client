@@ -77,11 +77,13 @@ export default {
     };
     const checkPicture = (file, files) => {
       if (file.raw.type !== "image/jpeg" && file.raw.type !== "image/png") {
-        ElMessage.error("上传的图片仅支持 JPG 或 PNG 格式！");
+        ElMessage.warning("上传的图片仅支持 JPG 或 PNG 格式！");
+        uploadRef.value.handleRemove(file);
         return;
       }
       if (file.size / 1024 / 1024 > 2) {
-        ElMessage.error("上传的图片大小不能超过 2M ！");
+        ElMessage.warning("上传的图片大小不能超过 2MB ！");
+        uploadRef.value.handleRemove(file);
         return;
       }
       fileList.value = files;
@@ -122,27 +124,28 @@ export default {
               message: "你还不是他（她）的好友",
               showClose: true,
             });
+            loading.value = false;
             return;
           }
           result.data.forEach((message, index) => {
-            socket.emit("sendMsg", message, (response) => {
-              console.log(response);
+            socket.emit("sendMsg", message, (response, msg) => {
               if (response) {
-                if (index === 0 && response === "offline") {
+                if (index === 0 && msg === "offline") {
                   ElMessage.warning({ message: "对方不在线", showClose: true });
                 }
-                chatHistoryList.value.push(message);
+                chatHistoryList.value.push(response);
                 nextTick(() => {
                   scrollbar.value.setScrollTop(chatBody.value.scrollHeight);
                 });
                 if (index === 0) {
                   uploadRef.value.clearFiles();
+                  fileList.value = [];
                 }
                 let chatIndex = chatList.value.findIndex(
-                  (chat) => chat.sessionId === message.sessionId
+                  (chat) => chat.sessionId === response.sessionId
                 );
-                chatList.value[chatIndex].createTime = message.createTime;
-                chatList.value[chatIndex].latestChatHistory = message;
+                chatList.value[chatIndex].createTime = response.createTime;
+                chatList.value[chatIndex].latestChatHistory = response;
                 let delChat = chatList.value.splice(chatIndex, 1)[0];
                 chatList.value.splice(0, 0, delChat);
               } else {

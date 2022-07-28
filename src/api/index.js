@@ -10,6 +10,8 @@ export const mockGetHistory = () => mockAxios.get('/chats/chat/history');
 
 export const reqLogin = (data) => axios.post('/auth/login', data);
 
+export const reqLogout = () => axios.post('/auth/logout');
+
 export const reqRegister = (data) => axios.post('/user/register', data);
 
 export const reqSendCode = (data) => axios.post('/user/verifyCode/send', data);
@@ -30,6 +32,10 @@ export const reqChangeAvatar = (data) => axios.post('/user/user/changeAvatar', d
 
 export const reqChangePassword = (data) => axios.post('/user/user/changePassword', data);
 
+export const reqAddTag = (data) => axios.post('/user/user/addTag', data);
+
+export const reqRemoveTag = (data) => axios.post('/user/user/removeTag', data);
+
 export const reqGetChatList = (params) => axios.get('/chat/chats', { params: params });
 
 export const reqGetFriendList = (params) => axios.get('/user/friends', { params: params });
@@ -40,4 +46,4 @@ export const reqGetHistory = (params) => axios.get('/chat/chats/chatHistory', { 
 
 export const reqSavePictureMsg = (data) => axios.post('/chat/chats/savePictureMsg', data, { headers: { 'Content-Type': 'multipart/form-data' } });
 
-export const reqLogout = () => axios.post('/auth/logout');
+export const reqSaveFileMsg = (data) => axios.post('/chat/chats/saveFileMsg', data, { headers: { 'Content-Type': 'multipart/form-data' } });
