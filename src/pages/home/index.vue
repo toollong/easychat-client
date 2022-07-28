@@ -86,7 +86,7 @@ export default {
       // let result = await mockGetUserInfo();
       let result = await reqGetUserInfo({ id: user.userId });
       if (result.success) {
-        user.avatar = "http://49.235.73.114:9000/easychat" + result.data.avatar;
+        user.avatar = "http://toollong.icu:9000/easychat" + result.data.avatar;
         user.nickName = result.data.nickName;
         socket.emit("online", user.userId, result.data.status);
       }

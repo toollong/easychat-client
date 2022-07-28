@@ -157,8 +157,27 @@
       </div>
     </div>
     <div class="password-footer">
-      <p>Copyright © 2022 EasyChat. Crafted with by toollong</p>
+      <div class="about">
+        <router-link to="/about" target="_blank">关于我们</router-link>
+        <a @click="showQRCode = true">联系我们</a>
+        <router-link to="/about" target="_blank">反馈建议</router-link>
+      </div>
+      <p>Copyright © 2022 toollong. All Rights Reserved.</p>
+      <a href="https://beian.miit.gov.cn/" target="_blank">
+        鲁ICP备2022024710号-1
+      </a>
     </div>
+    <el-dialog
+      v-model="showQRCode"
+      width="30%"
+      destroy-on-close
+      @open="randomNum = Math.floor(Math.random() * 6) + 1"
+    >
+      <div class="contact">
+        <p class="tip">扫一扫下面的二维码图案，加我微信</p>
+        <el-image :src="'/images/wechat/wechat' + randomNum + '.png'" />
+      </div>
+    </el-dialog>
     <el-dialog
       v-model="showVerification"
       title="请先完成安全验证"
@@ -343,6 +362,7 @@ export default {
       });
     };
 
+    const showQRCode = ref(false);
     const showVerification = ref(false);
     const verifyRef = ref();
     const successMsg = ref("");
@@ -430,6 +450,7 @@ export default {
       thirdForm,
       thirdRules,
       resetPassword,
+      showQRCode,
       showVerification,
       verifyRef,
       successMsg,
@@ -462,12 +483,13 @@ export default {
 }
 .password .password-body {
   width: 800px;
+  height: 800px;
   margin: 0 auto;
 }
 .password .password-footer {
   color: #969696;
-  margin: auto;
-  margin-bottom: 80px;
+  text-align: center;
+  margin-bottom: 40px;
 }
 .password-header img {
   width: 80px;
@@ -571,6 +593,36 @@ export default {
 }
 .password-body .result a:hover {
   color: #79bbff;
+}
+.password-footer .about {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.password-footer .about a {
+  margin-right: 20px;
+  cursor: pointer;
+}
+.password-footer p {
+  margin-bottom: 8px;
+}
+.password-footer a {
+  color: #909399;
+  text-decoration: none;
+}
+.password-footer a:hover {
+  color: #409eff;
+}
+.contact {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+  padding-bottom: 20px;
+}
+.contact .tip {
+  font-size: 18px;
+  color: var(--text-color-secondary);
+  margin-top: 0;
+  margin-bottom: 10px;
 }
 .el-input {
   --el-input-text-color: #606266;

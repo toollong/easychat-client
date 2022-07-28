@@ -42,7 +42,7 @@
                     <el-avatar
                       :src="
                         user.avatar
-                          ? 'http://49.235.73.114:9000/easychat' + user.avatar
+                          ? 'http://toollong.icu:9000/easychat' + user.avatar
                           : ''
                       "
                       size="large"
@@ -112,7 +112,7 @@
               <el-avatar
                 :src="
                   friend.avatar
-                    ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                    ? 'http://toollong.icu:9000/easychat' + friend.avatar
                     : ''
                 "
                 :size="60"

@@ -301,6 +301,7 @@ export default {
   font-weight: 600;
 }
 .about-footer p {
+  margin-top: 0;
   margin-bottom: 8px;
 }
 .about-footer a {

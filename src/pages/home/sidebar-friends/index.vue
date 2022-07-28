@@ -101,7 +101,7 @@
                   <el-avatar
                     :src="
                       friend.friendAvatar
-                        ? 'http://49.235.73.114:9000/easychat' +
+                        ? 'http://toollong.icu:9000/easychat' +
                           friend.friendAvatar
                         : ''
                     "
@@ -120,7 +120,7 @@
                     <el-avatar
                       :src="
                         friend.friendAvatar
-                          ? 'http://49.235.73.114:9000/easychat' +
+                          ? 'http://toollong.icu:9000/easychat' +
                             friend.friendAvatar
                           : ''
                       "

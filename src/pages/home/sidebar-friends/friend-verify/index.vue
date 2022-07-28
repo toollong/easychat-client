@@ -35,7 +35,7 @@
                   <el-avatar
                     :src="
                       row.senderId
-                        ? 'http://49.235.73.114:9000/easychat' +
+                        ? 'http://toollong.icu:9000/easychat' +
                           (row.senderId === user.userId
                             ? row.receiverAvatar
                             : row.senderAvatar)
@@ -118,7 +118,7 @@
               <el-avatar
                 :src="
                   friend.avatar
-                    ? 'http://49.235.73.114:9000/easychat' + friend.avatar
+                    ? 'http://toollong.icu:9000/easychat' + friend.avatar
                     : ''
                 "
                 :size="60"
