@@ -20,7 +20,7 @@ import "vue3-slide-verify/dist/style.css"
 
 const app = createApp(App)
 
-app.config.globalProperties.socket = io('http://localhost:9092', { transports: ['websocket'] })
+app.config.globalProperties.socket = io('http://49.235.73.114:9092', { transports: ['websocket'] })
 app.component(ElCollapseTransition.name, ElCollapseTransition)
 app.use(router)
 app.use(store)

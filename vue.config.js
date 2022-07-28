@@ -32,7 +32,7 @@ module.exports = defineConfig({
     allowedHosts: "all",
     proxy: {
       '/api': {
-        target: 'http://localhost:20010'
+        target: 'http://49.235.73.114:20010'
       }
     }
   }
