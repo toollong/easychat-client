@@ -23,7 +23,7 @@
         <el-avatar
           :src="
             userInfo.avatar
-              ? 'http://toollong.icu:9000/easychat' + userInfo.avatar
+              ? 'https://toollong.icu/easychat' + userInfo.avatar
               : ''
           "
           :size="80"

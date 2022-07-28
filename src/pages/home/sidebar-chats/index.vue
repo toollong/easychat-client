@@ -59,7 +59,7 @@
               <el-avatar
                 :src="
                   item.friendAvatar
-                    ? 'http://toollong.icu:9000/easychat' + item.friendAvatar
+                    ? 'https://toollong.icu/easychat' + item.friendAvatar
                     : ''
                 "
                 @error="() => true"
@@ -129,7 +129,7 @@
                   <el-avatar
                     :src="
                       chat.friendAvatar
-                        ? 'http://toollong.icu:9000/easychat' +
+                        ? 'https://toollong.icu/easychat' +
                           chat.friendAvatar
                         : ''
                     "

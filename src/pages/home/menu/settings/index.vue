@@ -171,7 +171,7 @@ export default {
       let result = await reqGetUserInfo({ id: user.userId });
       if (result.success) {
         avatarUrl.value =
-          "http://toollong.icu:9000/easychat" + result.data.avatar;
+          "https://toollong.icu/easychat" + result.data.avatar;
         online.value = result.data.status === 1 ? true : false;
         tags.value = result.data.tags ? result.data.tags.split(",") : [];
       }

@@ -6,7 +6,7 @@
           <el-avatar
             :src="
               friend.avatar
-                ? 'http://toollong.icu:9000/easychat' + friend.avatar
+                ? 'https://toollong.icu/easychat' + friend.avatar
                 : ''
             "
             size="large"
@@ -119,7 +119,7 @@
                 <el-avatar
                   :src="
                     friend.avatar
-                      ? 'http://toollong.icu:9000/easychat' + friend.avatar
+                      ? 'https://toollong.icu/easychat' + friend.avatar
                       : ''
                   "
                   :size="45"
@@ -144,12 +144,12 @@
                   class="image"
                   :src="
                     message.content
-                      ? 'http://toollong.icu:9000/easychat' + message.content
+                      ? 'https://toollong.icu/easychat' + message.content
                       : ''
                   "
                   fit="contain"
                   :preview-src-list="[
-                    'http://toollong.icu:9000/easychat' + message.content,
+                    'https://toollong.icu/easychat' + message.content,
                   ]"
                   hide-on-click-modal
                   @error="() => true"
@@ -178,7 +178,7 @@
                         class="download"
                         :href="
                           message.content
-                            ? 'http://toollong.icu:9000/easychat' +
+                            ? 'https://toollong.icu/easychat' +
                               message.content
                             : ''
                         "
