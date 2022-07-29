@@ -16,7 +16,7 @@
       </template>
       <template #tip>
         <div class="el-upload__tip">
-          注意：只支持单个文件上传，文件大小不能超过 50MB
+          注意：只支持单个文件上传，文件大小不能超过 30MB
           ，新文件将会覆盖旧文件。
         </div>
       </template>
@@ -75,8 +75,8 @@ export default {
       uploadRef.value.handleStart(file);
     };
     const checkFile = (file, files) => {
-      if (file.size / 1024 / 1024 > 50) {
-        ElMessage.warning("上传的文件大小不能超过 50MB ！");
+      if (file.size / 1024 / 1024 > 30) {
+        ElMessage.warning("上传的文件大小不能超过 30MB ！");
         uploadRef.value.handleRemove(file);
         return;
       }
