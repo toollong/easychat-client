@@ -63,9 +63,9 @@
         <router-link to="/register">立即注册</router-link>
       </p>
       <p class="tip">
-        登录即表示同意<a href="https://toollong.icu/#/about" target="_blank"
+        登录即表示同意<a href="https://toollong.icu/about" target="_blank"
           >《用户协议》</a
-        ><a href="https://toollong.icu/#/about" target="_blank">《隐私政策》</a>
+        ><a href="https://toollong.icu/about" target="_blank">《隐私政策》</a>
       </p>
     </div>
     <div class="login-footer">
