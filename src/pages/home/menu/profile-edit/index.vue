@@ -3,7 +3,7 @@
     <el-drawer
       v-model="isShow"
       direction="ltr"
-      size="26%"
+      size="500px"
       :show-close="false"
       destroy-on-close
       @open="open"
@@ -292,7 +292,7 @@ export default {
   margin-bottom: 14px;
 }
 .form .form-item .label {
-  width: 100%;
+  width: 320px;
   font-size: 16px;
 }
 .form .form-item .input {
@@ -300,7 +300,7 @@ export default {
   font-size: 15px;
 }
 .form .form-submit {
-  width: 80%;
+  width: 260px;
   font-size: 16px;
   margin-top: 20px;
   margin-left: 25px;

@@ -178,8 +178,7 @@
                         class="download"
                         :href="
                           message.content
-                            ? 'https://toollong.icu/easychat' +
-                              message.content
+                            ? 'https://toollong.icu/easychat' + message.content
                             : ''
                         "
                       >
@@ -564,7 +563,7 @@ export default {
 .header-user small {
   display: flex;
   align-items: center;
-  font-size: 100%;
+  font-size: 14px;
 }
 .header-user small.success {
   color: var(--color-success);
@@ -594,11 +593,7 @@ export default {
   margin-bottom: 20px;
 }
 .chat-body .messages .message-item.send {
-  display: flex;
-  width: 100%;
-  flex-flow: column nowrap;
   align-items: flex-end;
-  margin-bottom: 20px;
 }
 .chat-body .messages .message-item .divider {
   position: relative;

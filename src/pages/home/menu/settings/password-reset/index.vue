@@ -2,7 +2,7 @@
   <el-dialog
     v-model="isShow"
     title="修改密码"
-    width="30%"
+    width="570px"
     draggable
     destroy-on-close
     @closed="close(formRef)"
@@ -224,7 +224,7 @@ export default {
   font-size: 16px;
 }
 .form .form-item .button {
-  width: 40%;
+  width: 130px;
   font-size: 15px;
 }
 </style>

@@ -2,7 +2,7 @@
   <el-dialog
     v-model="isShow"
     title="修改备注"
-    width="30%"
+    width="570px"
     destroy-on-close
     @open="open"
     @closed="close"
@@ -198,7 +198,7 @@ export default {
   margin-left: 2px;
 }
 .remark-reset .form .form-button {
-  width: 40%;
+  width: 120px;
   margin-top: 20px;
 }
 </style>

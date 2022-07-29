@@ -30,7 +30,7 @@
     >
       发送
     </el-button>
-    <el-dialog v-model="dialogVisible" width="40%" destroy-on-close>
+    <el-dialog v-model="dialogVisible" width="760px" destroy-on-close>
       <div class="dialog">
         <el-image :src="dialogImageUrl" fit="contain" />
       </div>

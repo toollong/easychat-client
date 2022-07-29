@@ -120,7 +120,7 @@
     </div>
     <el-dialog
       v-model="showQRCode"
-      width="30%"
+      width="570px"
       destroy-on-close
       @open="randomNum = Math.floor(Math.random() * 6) + 1"
     >

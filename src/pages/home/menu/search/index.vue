@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="isShow"
-    width="40%"
+    width="760px"
     top="10vh"
     :show-close="false"
     draggable

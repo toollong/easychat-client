@@ -131,7 +131,7 @@
     </el-scrollbar>
     <el-dialog
       v-model="showQRCode"
-      width="30%"
+      width="570px"
       destroy-on-close
       @open="randomNum = Math.floor(Math.random() * 6) + 1"
     >
@@ -236,7 +236,7 @@ export default {
   color: #969696;
 }
 .about-body .collapse:deep(.el-timeline-item__content) {
-  width: 80%;
+  width: 450px;
 }
 .about-body .collapse:deep(.version) .el-card {
   border-radius: 10px;

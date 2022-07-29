@@ -2,7 +2,7 @@
   <el-dialog
     v-model="isShow"
     title="新朋友"
-    width="26%"
+    width="500px"
     destroy-on-close
     @closed="close"
   >

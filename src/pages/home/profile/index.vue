@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="isShow"
-    size="23%"
+    size="440px"
     :show-close="false"
     destroy-on-close
     @open="open"

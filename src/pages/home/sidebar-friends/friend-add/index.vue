@@ -2,7 +2,7 @@
   <el-dialog
     v-model="isShow"
     :title="showApplyForm ? '申请添加好友' : '添加好友'"
-    width="30%"
+    width="570px"
     destroy-on-close
     @closed="close"
   >
@@ -357,12 +357,12 @@ export default {
   padding: 20px;
 }
 .friend-add .user-search {
-  width: 100%;
+  width: 500px;
   min-height: 120px;
 }
 .friend-add .apply-form {
   display: flex;
-  width: 80%;
+  width: 400px;
   flex-flow: column nowrap;
   margin-right: 20px;
 }
@@ -379,7 +379,7 @@ export default {
   color: var(--color-white);
 }
 .search-result {
-  width: 100%;
+  width: 500px;
   height: 330px;
   overflow: auto;
 }

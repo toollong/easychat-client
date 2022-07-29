@@ -169,7 +169,7 @@
     </div>
     <el-dialog
       v-model="showQRCode"
-      width="30%"
+      width="570px"
       destroy-on-close
       @open="randomNum = Math.floor(Math.random() * 6) + 1"
     >
@@ -181,7 +181,7 @@
     <el-dialog
       v-model="showVerification"
       title="请先完成安全验证"
-      width="20%"
+      width="380px"
       top="30vh"
       destroy-on-close
     >
@@ -529,7 +529,7 @@ export default {
   color: #606266;
 }
 .password-body .first-form .form-submit {
-  width: 100%;
+  width: 350px;
   height: 45px;
   font-size: 16px;
   margin-top: 20px;
@@ -544,20 +544,20 @@ export default {
   margin-left: 45px;
 }
 .password-body .second-form .form-item {
-  width: 80%;
+  width: 360px;
   margin-left: 45px;
   margin-bottom: 26px;
 }
 .password-body .second-form .form-item .input.verify {
-  width: 68%;
+  width: 240px;
 }
 .password-body .second-form .form-item .button {
-  width: 115px;
+  width: 120px;
   height: 45px;
   font-size: 15px;
 }
 .password-body .second-form .form-submit {
-  width: 80%;
+  width: 360px;
   height: 45px;
   font-size: 16px;
   margin-top: 10px;
@@ -574,7 +574,7 @@ export default {
   margin-bottom: 30px;
 }
 .password-body .third-form .form-submit {
-  width: 100%;
+  width: 350px;
   height: 45px;
   font-size: 17px;
   margin-top: 10px;

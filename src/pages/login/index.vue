@@ -98,7 +98,7 @@
     />
     <el-dialog
       v-model="showQRCode"
-      width="30%"
+      width="570px"
       destroy-on-close
       @open="randomNum = Math.floor(Math.random() * 6) + 1"
     >
@@ -110,7 +110,7 @@
     <el-dialog
       v-model="showVerification"
       title="请先完成安全验证"
-      width="20%"
+      width="380px"
       top="30vh"
       destroy-on-close
     >
@@ -255,7 +255,7 @@ export default {
 }
 .login .login-body {
   display: flex;
-  width: 20%;
+  width: 380px;
   height: 420px;
   flex-flow: column nowrap;
   align-items: center;
@@ -292,7 +292,7 @@ export default {
   margin-bottom: 15px;
 }
 .login-body .form {
-  width: 100%;
+  width: 380px;
   padding: 20px 40px;
 }
 .login-body .form .form-item {
@@ -321,7 +321,7 @@ export default {
   color: #79bbff;
 }
 .login-body .form .form-submit {
-  width: 100%;
+  width: 300px;
   font-size: 15px;
 }
 .login-body .to-register {

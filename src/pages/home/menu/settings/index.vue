@@ -1,7 +1,7 @@
 <template>
   <el-drawer
     v-model="isShow"
-    size="26%"
+    size="500px"
     direction="ltr"
     :show-close="false"
     destroy-on-close
@@ -107,14 +107,14 @@
       </div>
     </div>
     <PasswordReset v-model:show="showPasswordReset" />
-    <el-dialog v-model="showAvatar" width="30%" destroy-on-close>
+    <el-dialog v-model="showAvatar" width="570px" destroy-on-close>
       <div class="preview">
         <el-image :src="avatarUrl" fit="contain" />
       </div>
     </el-dialog>
     <el-dialog
       v-model="showQRCode"
-      width="30%"
+      width="570px"
       destroy-on-close
       @open="randomNum = Math.floor(Math.random() * 6) + 1"
     >
@@ -170,8 +170,7 @@ export default {
     const open = async () => {
       let result = await reqGetUserInfo({ id: user.userId });
       if (result.success) {
-        avatarUrl.value =
-          "https://toollong.icu/easychat" + result.data.avatar;
+        avatarUrl.value = "https://toollong.icu/easychat" + result.data.avatar;
         online.value = result.data.status === 1 ? true : false;
         tags.value = result.data.tags ? result.data.tags.split(",") : [];
       }

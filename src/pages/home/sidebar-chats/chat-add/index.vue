@@ -3,7 +3,7 @@
     <el-dialog
       v-model="isShow"
       title="新建聊天"
-      width="30%"
+      width="570px"
       destroy-on-close
       @closed="close"
     >
