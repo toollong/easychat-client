@@ -45,10 +45,15 @@
             <div class="version">
               <p class="tip">网站正在持续建设中，更多的功能敬请期待...</p>
               <el-timeline>
-                <el-timeline-item timestamp="将来" placement="top" type="info">
+                <el-timeline-item
+                  timestamp="将要发布"
+                  placement="top"
+                  type="info"
+                >
                   <el-card>
                     <el-tag type="info">v1.0.1</el-tag>
-                    <p>修复了部分 BUG</p>
+                    <p>- 实现移动端适配，可以在手机上体验使用了</p>
+                    <p>- 修复了部分已知 BUG</p>
                   </el-card>
                 </el-timeline-item>
                 <el-timeline-item
@@ -58,7 +63,7 @@
                 >
                   <el-card>
                     <el-tag type="success">v1.0.0</el-tag>
-                    <p>发布上线</p>
+                    <p>- 发布上线</p>
                   </el-card>
                 </el-timeline-item>
               </el-timeline>
@@ -72,7 +77,9 @@
                 <li>
                   单次发送多张图片，图片在消息列表中的显示问题（刷新页面后可正确显示）
                 </li>
-                <li>发送文件过大导致发送失败（后端 Java 内存溢出）</li>
+                <li>
+                  发送文件过大导致发送失败（服务器不行，内存不够用，见谅）
+                </li>
               </ul>
             </div>
           </el-collapse-item>
@@ -237,6 +244,9 @@ export default {
 .about-body .collapse:deep(.version) .el-card {
   border-radius: 10px;
 }
+.about-body .collapse:deep(.version) .el-tag {
+  margin-bottom: 10px;
+}
 .about-body .collapse:deep(.version) .tip {
   color: #969696;
   margin-top: 10px;
@@ -245,8 +255,7 @@ export default {
 }
 .about-body .collapse:deep(.version) p {
   color: #606266;
-  margin-top: 10px;
-  margin-bottom: 0;
+  margin: 0;
 }
 .about-body .collapse:deep(.bug) p {
   color: #969696;
