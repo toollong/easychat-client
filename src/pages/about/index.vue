@@ -103,11 +103,11 @@
 
         <div>
           <p class="email">
-            本人邮箱：toollong@163.com
+            我的邮箱：toollong@163.com
             <a @click="showQRCode = true">想加微信？</a>
           </p>
           <p class="blog">
-            本人博客：<a
+            我的博客：<a
               href="https://blog.csdn.net/weixin_49523761"
               target="_blank"
               >https://blog.csdn.net/weixin_49523761</a
