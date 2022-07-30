@@ -8,6 +8,7 @@ EasyChat 是一个可以在线聊天的即时通讯平台，完全由个人设�
 
 体验地址：[https://toollong.icu](https://toollong.icu)（我的用户名：toollong）
 
+关于网站的更多信息，[点击这里](https://toollong.icu/#/about)。
 
 > ### 功能介绍
 
