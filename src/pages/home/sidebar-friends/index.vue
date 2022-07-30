@@ -101,8 +101,7 @@
                   <el-avatar
                     :src="
                       friend.friendAvatar
-                        ? 'https://toollong.icu/easychat' +
-                          friend.friendAvatar
+                        ? 'https://toollong.icu/easychat' + friend.friendAvatar
                         : ''
                     "
                     :size="45"
@@ -217,6 +216,7 @@ import {
 } from "vue";
 import { useStore } from "vuex";
 import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
+import Notify from "@wcjiang/notify";
 import FriendAdd from "@/pages/home/sidebar-friends/friend-add";
 import FriendVerify from "@/pages/home/sidebar-friends/friend-verify";
 import RemarkReset from "@/pages/home/sidebar-friends/remark-reset";
@@ -370,6 +370,17 @@ export default {
         callback();
         friendVerifyList.value.splice(0, 0, friendVerify);
         hideBadge.value = false;
+        const notify = new Notify({
+          disableFavicon: true,
+          onclick: () => {
+            notify.close();
+          },
+          audio: {
+            file: "/audio/friend.wav",
+          },
+        });
+        notify.isPermission();
+        notify.player();
         ElNotification.info({
           title: "你有一条好友验证消息",
           message: friendVerify.senderNickName + " 请求添加你为好友",
@@ -390,6 +401,17 @@ export default {
           hideBadge.value = false;
         }
         chatList.value.splice(0, 0, chatSession);
+        const notify = new Notify({
+          disableFavicon: true,
+          onclick: () => {
+            notify.close();
+          },
+          audio: {
+            file: "/audio/friend.wav",
+          },
+        });
+        notify.isPermission();
+        notify.player();
         ElNotification.info({
           title: "你有一条好友验证消息",
           message: chatSession.friendNickName + " 已同意你的好友请求",
@@ -405,6 +427,17 @@ export default {
         if (index >= 0) {
           friendVerifyList.value[index].status = 2;
           hideBadge.value = false;
+          const notify = new Notify({
+            disableFavicon: true,
+            onclick: () => {
+              notify.close();
+            },
+            audio: {
+              file: "/audio/friend.wav",
+            },
+          });
+          notify.isPermission();
+          notify.player();
           ElNotification.info({
             title: "你有一条好友验证消息",
             message:

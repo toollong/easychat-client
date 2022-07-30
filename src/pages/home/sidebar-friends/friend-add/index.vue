@@ -14,7 +14,7 @@
           v-model.trim="username"
           maxlength="11"
           size="large"
-          placeholder="用户名"
+          placeholder="用户名（例如：toollong）"
           spellcheck="false"
           clearable
           @keydown.enter="searchUser"

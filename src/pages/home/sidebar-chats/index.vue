@@ -129,8 +129,7 @@
                   <el-avatar
                     :src="
                       chat.friendAvatar
-                        ? 'https://toollong.icu/easychat' +
-                          chat.friendAvatar
+                        ? 'https://toollong.icu/easychat' + chat.friendAvatar
                         : ''
                     "
                     size="large"
@@ -256,6 +255,7 @@ import {
 import { useStore } from "vuex";
 import { ElMessage, ElMessageBox, ElNotification } from "element-plus";
 import { compareDate, formatDate } from "@/utils/date";
+import Notify from "@wcjiang/notify";
 import ChatAdd from "@/pages/home/sidebar-chats/chat-add";
 
 export default {
@@ -401,6 +401,17 @@ export default {
           (chat) => chat.sessionId === message.sessionId
         );
         if (chat) {
+          const notify = new Notify({
+            disableFavicon: true,
+            onclick: () => {
+              notify.close();
+            },
+            audio: {
+              file: "/audio/chat.wav",
+            },
+          });
+          notify.isPermission();
+          notify.player();
           ElNotification.success({
             title: "你有一条新消息（点我查看）",
             message:
