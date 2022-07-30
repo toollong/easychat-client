@@ -8,7 +8,7 @@ EasyChat 是一个可以在线聊天的即时通讯平台，完全由个人设�
 
 体验地址：[https://toollong.icu](https://toollong.icu)
 
-> #### 功能介绍
+> ### 功能介绍
 
 注册
 登录
@@ -32,13 +32,13 @@ EasyChat 是一个可以在线聊天的即时通讯平台，完全由个人设�
 夜间模式
 小抽屉（搜一搜、日历）
 
-> #### 技术栈
+> ### 技术栈
 
 前端：Vue 3，Vue Router，Vuex，Element Plus，Socket.IO，Axios，VueUse...
 
 后端：Spring Cloud，Nacos，MyBatis-Plus，Netty-socketio，MinIO，Gson，MySQL，Redis，Docker...
 
-> #### 注意
+> ### 注意
 
 本网站仅供学习交流使用，由于网站的安全保障和加密措施并不完善，**请勿在网站中输入敏感信息**，避免信息泄露的风险。
 
@@ -48,7 +48,7 @@ EasyChat 是一个可以在线聊天的即时通讯平台，完全由个人设�
 npm install
 ```
 
-### 启动运行
+## 启动
 
 需要修改的地方：
 
@@ -59,7 +59,7 @@ npm install
 npm run serve
 ```
 
-### 构建
+## 构建
 
 ```
 npm run build
