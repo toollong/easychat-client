@@ -46,9 +46,9 @@
               <p class="tip">网站正在持续建设中，更多的功能敬请期待...</p>
               <el-timeline>
                 <el-timeline-item
-                  timestamp="将要发布"
+                  timestamp="2022-08-02"
                   placement="top"
-                  type="info"
+                  type="success"
                 >
                   <el-card>
                     <el-tag type="info">v1.0.1</el-tag>
@@ -59,7 +59,8 @@
                 <el-timeline-item
                   timestamp="2022-08-01"
                   placement="top"
-                  type="success"
+                  type="primary"
+                  hollow
                 >
                   <el-card>
                     <el-tag type="success">v1.0.0</el-tag>
