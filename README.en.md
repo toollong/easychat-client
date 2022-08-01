@@ -21,13 +21,13 @@ For more information about the website, [click here](https://toollong.icu/#/abou
 - Send Emoji emoticons (Windows 7 may not display properly)
 - Send Pictures (Batch send)
 - Send File (Send synchronously, a little slow)
-- New Message Notification
+- New Message Notification (Including prompt tone)
 - Search Users
 - Modify Friend's Remark
 - Apply For Friend
 - Verify Friend
 - Delete Friend (One-way delete)
-- Verify Message Notification
+- Verify Message Notification (Including prompt tone)
 - View Profile
 - Edit Profile
 - Settings (Avatar、Invisible、Tags、Change Password)
