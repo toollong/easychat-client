@@ -51,7 +51,7 @@
                   type="success"
                 >
                   <el-card>
-                    <el-tag type="info">v1.0.1</el-tag>
+                    <el-tag type="success">v1.0.1</el-tag>
                     <p>- 新增聊天消息提示音和好友验证提示音</p>
                     <p>- 修复了部分已知 BUG</p>
                   </el-card>
@@ -89,14 +89,13 @@
               </p>
               <span>前端：</span>
               <div>
-                Vue 3，Vue Router，Vuex，Element
-                Plus，Socket.IO，Axios，VueUse...
+                Vue 3、Vue Router、Vuex、Element
+                Plus、Socket.IO、Axios、VueUse...
               </div>
               <span>后端：</span>
               <div>
                 Spring
-                Cloud，Nacos，MyBatis-Plus，Netty-socketio，MinIO，Gson，MySQL，Redis，
-                Docker...
+                Cloud、Nacos、MyBatis-Plus、Netty-socketio、MinIO、Gson、MySQL、Redis、Docker...
               </div>
             </div>
           </el-collapse-item>
