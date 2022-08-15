@@ -8,13 +8,17 @@
   >
     <div class="friend-add">
       <div class="user-search" v-show="!showApplyForm">
-        <el-alert title="输入用户名搜索用户" type="success" center />
+        <el-alert
+          title="输入用户名搜索用户（例如：toollong）"
+          type="success"
+          center
+        />
         <el-input
           class="search"
           v-model.trim="username"
           maxlength="11"
           size="large"
-          placeholder="用户名（例如：toollong）"
+          placeholder="用户名"
           spellcheck="false"
           clearable
           @keydown.enter="searchUser"

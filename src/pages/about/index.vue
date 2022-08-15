@@ -46,6 +46,18 @@
               <p class="tip">网站正在持续建设中，更多的功能敬请期待...</p>
               <el-timeline>
                 <el-timeline-item
+                  timestamp="即将上线"
+                  placement="top"
+                  type="info"
+                >
+                  <el-card>
+                    <el-tag type="info">v1.1.0</el-tag>
+                    <p>
+                      - 新增反馈社区，在这里可以写文章、交朋友、提建议、找BUG...
+                    </p>
+                  </el-card>
+                </el-timeline-item>
+                <el-timeline-item
                   timestamp="2022-08-02"
                   placement="top"
                   type="success"
